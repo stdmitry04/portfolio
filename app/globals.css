@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  /* ─── Colors ─── */
   --bg: #0C1015;
   --surface: #13191F;
   --text: #EDE8E3;
@@ -10,6 +11,44 @@
   --rose: #B8768A;
   --border: #1E2830;
   --surface-hover: #1A2129;
+
+  /* ─── Typographic Scale ───
+   *
+   * 5-level hierarchy based on ~1.3x ratio.
+   * Each level creates clear visual dominance without crowding.
+   *
+   * L1 — Section labels, role tags, side nav
+   *       Small, tracked uppercase. Entry point / wayfinding.
+   *       Usage: section labels ("Career", "Case Studies"), role label in hero,
+   *              timeline dates, project year/role, side nav labels
+   *
+   * L2 — Body text, descriptions, bullet points
+   *       Primary reading size. 45-75 char line length optimal.
+   *       Usage: timeline descriptions, project hooks, tab content bullets,
+   *              about section secondary paragraph, tech skill items,
+   *              tab buttons, company names, highlight stats
+   *
+   * L3 — Lead text, intro paragraphs
+   *       Slightly larger than body. Used sparingly for emphasis.
+   *       Usage: about section main paragraph, hero tagline
+   *
+   * L4 — Subheadings
+   *       Clear step above body. Anchors subsections.
+   *       Usage: tab content headings ("Architecture & Scale"),
+   *              timeline role titles, project card titles
+   *
+   * L5 — Section headings
+   *       Dominant anchors. One per section.
+   *       Usage: "Experience", "Selected Work", "Technologies"
+   *
+   * Hero name is outside the scale — it's the singular dominant
+   * element on the page (text-6xl → 8xl).
+   */
+  --text-label: 0.875rem;       /* 14px — L1 */
+  --text-body: 0.9375rem;       /* 15px — L2 */
+  --text-body-lg: 1.0625rem;    /* 17px — L3 */
+  --text-sub-heading: 1.5rem;   /* 24px — L4 */
+  /* L5 uses Tailwind text-4xl/5xl directly */
 }
 
 @theme inline {
@@ -25,6 +64,13 @@
   --font-display: var(--font-cormorant);
   --font-body: var(--font-syne);
   --font-mono: var(--font-jetbrains-mono);
+
+  /* Expose scale as Tailwind utilities:
+   * text-label, text-body, text-body-lg, text-sub-heading */
+  --font-size-label: var(--text-label);
+  --font-size-body: var(--text-body);
+  --font-size-body-lg: var(--text-body-lg);
+  --font-size-sub-heading: var(--text-sub-heading);
 }
 
 body {

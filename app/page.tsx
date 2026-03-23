@@ -4,6 +4,20 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 
+/*
+ * ─── Typographic Scale Reference ───
+ *
+ * This file uses CSS custom properties defined in globals.css
+ * via Tailwind utilities for consistent typography:
+ *
+ *   text-label      (14px) — L1: section labels, dates, roles, nav, tech pills, links
+ *   text-body       (15px) — L2: descriptions, bullets, tab buttons, skill items
+ *   text-body-lg    (17px) — L3: project hooks, about secondary, hero tagline
+ *   text-sub-heading(24px) — L4: tab headings, timeline titles (via text-2xl)
+ *   text-4xl/5xl           — L5: section headings ("Experience", "Selected Work")
+ *   text-6xl → 8xl         — Hero name (singular, outside scale)
+ */
+
 /* ─────────────────────────── DATA ─────────────────────────── */
 
 const projects = [
@@ -187,12 +201,42 @@ const projects = [
       ],
     },
   },
+  {
+    title: "Multi-Agent Simulation Engine",
+    hook: "Stride scheduler and tiered execution system for a real-time civilization simulation. MSU Capstone (CSE 498).",
+    year: "2026",
+    role: "Scheduler Lead — Team of 30 (4th most active contributor, 18 commits)",
+    stack: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Unit Testing"],
+    github: "https://github.com/CSE498/Spring2026-CompanyC",
+    media: [] as { type: "image" | "video"; src: string }[],
+    technical: {
+      heading: "Scheduling Architecture",
+      points: [
+        "Stride scheduling algorithm: processes have a virtual time position (pass) and stride inversely proportional to priority. Scheduler always picks the process furthest behind in virtual time — guaranteeing fair, proportional CPU allocation.",
+        "Tiered execution system with 4 importance levels: CRITICAL (40% frame budget), GAMEPLAY (30%), ECONOMY (20%), COSMETIC (10%). Each tier backed by its own Scheduler instance via composition.",
+        "Soft budget enforcement for CRITICAL tier (up to 250ms overage allowed), hard budget cutoff for all other tiers. Prevents cosmetic processes from starving gameplay-critical ones.",
+        "C++23 compiled to WebAssembly via Emscripten. Designed interfaces between world state, agent behaviors, and rendering systems across distributed development teams.",
+        "Full test suite: unit tests for base Scheduler (add/remove/priority/peek) and TieredScheduler (budget enforcement, tier isolation, edge cases). Assert-to-throw conversion for robust error handling.",
+      ],
+    },
+    business: {
+      heading: "Capstone & Team Scale",
+      points: [
+        "MSU CSE 498 capstone project — semester-long team of 30 engineers building a tile-based civilization simulation with AI-driven agents.",
+        "Owned the scheduling subsystem end-to-end: designed the architecture, wrote the roadmap (7-phase plan), implemented and tested Phases 1-2, then handed off cleanly to downstream teams.",
+        "~1,500 lines of code across 3 merged pull requests, all code-reviewed by team leads. 4th most active contributor out of 30.",
+        "Scheduling system directly enables the game loop: without proportional frame budget allocation, 50+ concurrent agents would starve each other and drop below real-time.",
+        "Demonstrates ability to work in large-team engineering with branching strategy, PR workflow, and cross-team API design — the same process used in industry.",
+      ],
+    },
+  },
 ];
 
 const skills = {
   "AI / ML": ["OpenAI API", "RAG Systems", "Qdrant Vector DB", "Google Gemini", "GPT-4", "Embeddings"],
   Backend: ["Django REST", "FastAPI", "Node.js", "PostgreSQL", "Redis", "Supabase"],
   Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Zustand", "Framer Motion"],
+  Systems: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Process Management"],
   Infrastructure: ["AWS (EC2, S3, RDS)", "Docker", "Terraform", "Vercel", "GitHub Actions", "CI/CD"],
 };
 
@@ -203,7 +247,7 @@ const fadeUp = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -446,14 +490,17 @@ function ProjectCard({
           <h3 className="font-display text-3xl md:text-4xl font-light tracking-tight text-text">
             {project.title}
           </h3>
-          <span className="font-mono text-xs text-text-muted whitespace-nowrap mt-2">
+          {/* L1 */}
+          <span className="font-mono text-label text-text-muted whitespace-nowrap mt-2">
             {project.year}
           </span>
         </div>
-        <p className="font-body text-base text-text-muted leading-relaxed max-w-2xl">
+        {/* L3 */}
+        <p className="font-body text-body-lg text-text-muted leading-relaxed max-w-2xl">
           {project.hook}
         </p>
-        <p className="font-mono text-xs text-sage mt-3">{project.role}</p>
+        {/* L1 */}
+        <p className="font-mono text-label text-sage mt-3">{project.role}</p>
       </div>
 
       {/* Media strip */}
@@ -466,7 +513,7 @@ function ProjectCard({
         {project.stack.map((tech) => (
           <span
             key={tech}
-            className="px-3 py-1 text-xs font-mono rounded-full border border-border text-text-muted
+            className="px-3 py-1 text-label font-mono rounded-full border border-border text-text-muted
                        group-hover:border-accent-blue/30 transition-colors duration-300"
           >
             {tech}
@@ -478,7 +525,7 @@ function ProjectCard({
       <div className="px-8 pt-5 flex gap-1">
         <button
           onClick={() => setTab("technical")}
-          className={`px-4 py-2 text-sm font-body font-medium rounded-t-sm transition-all duration-200 ${
+          className={`px-4 py-2 text-body font-body font-medium rounded-t-sm transition-all duration-200 ${
             tab === "technical"
               ? "bg-bg text-accent-blue border border-border border-b-transparent"
               : "text-text-muted hover:text-text"
@@ -488,7 +535,7 @@ function ProjectCard({
         </button>
         <button
           onClick={() => setTab("business")}
-          className={`px-4 py-2 text-sm font-body font-medium rounded-t-sm transition-all duration-200 ${
+          className={`px-4 py-2 text-body font-body font-medium rounded-t-sm transition-all duration-200 ${
             tab === "business"
               ? "bg-bg text-rose border border-border border-b-transparent"
               : "text-text-muted hover:text-text"
@@ -501,8 +548,9 @@ function ProjectCard({
       {/* Tab content */}
       <div className="px-8 pb-8 pt-0">
         <div className="bg-bg border border-border rounded-b-sm rounded-tr-sm p-6">
+          {/* L4 */}
           <h4
-            className={`font-display text-xl font-medium mb-4 ${
+            className={`font-display text-sub-heading font-medium mb-5 ${
               tab === "technical" ? "text-accent-blue" : "text-rose"
             }`}
           >
@@ -520,7 +568,7 @@ function ProjectCard({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05, duration: 0.3 }}
-                className="flex gap-3 text-sm leading-relaxed text-text-muted"
+                className="flex gap-3 text-body leading-relaxed text-text-muted"
               >
                 <span
                   className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
@@ -540,7 +588,7 @@ function ProjectCard({
           href={project.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-xs text-accent-blue hover:text-text transition-colors duration-200 flex items-center gap-1.5"
+          className="font-mono text-label text-accent-blue hover:text-text transition-colors duration-200 flex items-center gap-1.5"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -552,7 +600,7 @@ function ProjectCard({
             href={project.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-xs text-sage hover:text-text transition-colors duration-200 flex items-center gap-1.5"
+            className="font-mono text-label text-sage hover:text-text transition-colors duration-200 flex items-center gap-1.5"
           >
             <svg
               className="w-4 h-4"
@@ -656,7 +704,7 @@ function SideNav() {
               />
               {/* Label */}
               <span
-                className={`absolute left-6 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.2em] transition-all duration-500 ease-out ${
+                className={`absolute left-6 whitespace-nowrap font-mono text-xs uppercase tracking-[0.2em] transition-all duration-500 ease-out ${
                   isActive
                     ? "text-accent-blue"
                     : "text-text-muted/40 group-hover:text-text-muted"
@@ -733,40 +781,76 @@ export default function Home() {
             initial="hidden"
             animate="visible"
           >
+            {/* L1: Role label — small, spaced, colored. Entry point. */}
             <motion.p
               variants={fadeUp}
               custom={0}
-              className="font-mono text-xs text-accent-blue tracking-[0.3em] uppercase mb-6"
+              className="font-mono text-label text-accent-blue tracking-[0.25em] uppercase mb-5"
             >
               Full-Stack Engineer
             </motion.p>
+
+            {/* L2: Name — dominant anchor. Largest element on page. */}
             <motion.h1
               variants={fadeUp}
               custom={1}
-              className="font-display text-6xl md:text-7xl lg:text-8xl font-light leading-[0.9] tracking-tight mb-6"
+              className="font-display text-6xl md:text-7xl lg:text-8xl font-light leading-[0.9] tracking-tight mb-7"
             >
               <span className="inline-block mb-2">Dmitry</span>
               <br />
               <span className="text-accent-blue">Staro</span>dubtsev
             </motion.h1>
+
+            {/* L3: Tagline — clear step down from name. 50-70 char line length. */}
             <motion.p
               variants={fadeUp}
               custom={2}
-              className="text-base md:text-lg text-text-muted leading-relaxed max-w-md mb-8"
+              className="text-lg md:text-xl text-text-muted leading-relaxed max-w-lg mb-10"
             >
               Building AI-powered platforms and high-load B2B systems.
               Michigan State &apos;26.
             </motion.p>
+
+            {/* L4: Highlights — supporting proof. Step down from tagline. */}
             <motion.div
               variants={fadeUp}
               custom={3}
-              className="flex gap-6"
+              className="grid grid-cols-2 gap-x-8 gap-y-5 mb-10 max-w-lg"
+            >
+              {[
+                { stat: "AI platform in production", detail: "serving 5 university partners" },
+                { stat: "Shipped pilot ahead of schedule", detail: "seed-stage startup, 4-person team" },
+                { stat: "Scaled org 55%", detail: "450 to 700 members" },
+                { stat: "SpartaHack XI", detail: "Blockchain Track 3rd Place" },
+              ].map((h, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.08, duration: 0.4 }}
+                  className="border-l-2 border-accent-blue/30 pl-4 py-1"
+                >
+                  <p className="text-body font-body font-semibold text-text leading-snug">
+                    {h.stat}
+                  </p>
+                  <p className="text-label font-mono text-text-muted leading-snug mt-1">
+                    {h.detail}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* L5: Links — lowest hierarchy. Functional, not attention-grabbing. */}
+            <motion.div
+              variants={fadeUp}
+              custom={4}
+              className="flex gap-7"
             >
               <a
                 href="https://github.com/stdmitry04"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-xs text-[#9CA3AF] hover:text-[#c9d1d9] transition-colors duration-300"
+                className="font-mono text-label text-[#9CA3AF] hover:text-[#c9d1d9] transition-colors duration-300"
               >
                 GitHub
               </a>
@@ -774,13 +858,13 @@ export default function Home() {
                 href="https://linkedin.com/in/stdmitry04"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-xs text-[#4A90C2] hover:text-[#5BA0D6] transition-colors duration-300"
+                className="font-mono text-label text-[#4A90C2] hover:text-[#5BA0D6] transition-colors duration-300"
               >
                 LinkedIn
               </a>
               <a
                 href="mailto:starodu5@gmail.com"
-                className="font-mono text-xs text-[#C0796F] hover:text-[#EA4335] transition-colors duration-300"
+                className="font-mono text-label text-[#C0796F] hover:text-[#EA4335] transition-colors duration-300"
                 onClick={(e) => {
                   e.preventDefault();
                   navigator.clipboard.writeText("starodu5@gmail.com");
@@ -824,7 +908,8 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <p className="font-mono text-xs text-sage tracking-[0.3em] uppercase mb-6">
+            {/* L1 */}
+            <p className="font-mono text-label text-sage tracking-[0.25em] uppercase mb-6">
               About
             </p>
             <p className="font-display text-2xl md:text-3xl font-light leading-relaxed text-text">
@@ -834,7 +919,8 @@ export default function Home() {
               systems. Studying Computer Science with a Business minor at
               Michigan State University — GPA 3.8, graduating May 2026.
             </p>
-            <p className="mt-6 text-text-muted leading-relaxed">
+            {/* L3 */}
+            <p className="mt-6 text-body-lg text-text-muted leading-relaxed">
               Focused on distributed systems, AI/ML, and high-performance
               computing. I build things that ship — from enterprise platforms
               processing thousands of applications daily to hackathon projects
@@ -859,7 +945,8 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <p className="font-mono text-xs text-sage tracking-[0.3em] uppercase mb-4">
+            {/* L1 */}
+            <p className="font-mono text-label text-sage tracking-[0.25em] uppercase mb-5">
               Career
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-light tracking-tight">
@@ -878,16 +965,16 @@ export default function Home() {
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
-              <p className="font-mono text-xs text-accent-blue mb-1">
+              <p className="font-mono text-label text-accent-blue mb-1.5">
                 April 2024 — Present
               </p>
-              <h3 className="font-display text-2xl font-light text-text mb-1">
+              <h3 className="font-display text-sub-heading font-light text-text mb-1">
                 Software Developer
               </h3>
-              <p className="font-mono text-sm text-sage mb-3">
+              <p className="font-mono text-body text-sage mb-3">
                 APS Data Technologies — EdTech B2B
               </p>
-              <p className="text-sm text-text-muted leading-relaxed">
+              <p className="text-body text-text-muted leading-relaxed">
                 Building production AI-powered ATS systems processing 1,000+
                 applications daily for K-12 school districts. Full-stack work
                 across Django REST, Next.js, PostgreSQL, and AWS. Led
@@ -905,16 +992,16 @@ export default function Home() {
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
-              <p className="font-mono text-xs text-accent-blue mb-1">
+              <p className="font-mono text-label text-accent-blue mb-1.5">
                 September 2024 — December 2024
               </p>
-              <h3 className="font-display text-2xl font-light text-text mb-1">
+              <h3 className="font-display text-sub-heading font-light text-text mb-1">
                 Software Engineer
               </h3>
-              <p className="font-mono text-sm text-sage mb-3">
+              <p className="font-mono text-body text-sage mb-3">
                 Safety Straw — Seed-stage Safety Tech Startup
               </p>
-              <p className="text-sm text-text-muted leading-relaxed">
+              <p className="text-body text-text-muted leading-relaxed">
                 Delivered e-commerce platform with 4-person team 25% ahead of
                 timeline. Built frontend and CI/CD pipeline reducing deployment
                 from hours to minutes. Architected RESTful API connecting React
@@ -931,16 +1018,16 @@ export default function Home() {
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-rose border-2 border-bg" />
-              <p className="font-mono text-xs text-rose mb-1">
+              <p className="font-mono text-label text-rose mb-1.5">
                 September 2024 — May 2025
               </p>
-              <h3 className="font-display text-2xl font-light text-text mb-1">
+              <h3 className="font-display text-sub-heading font-light text-text mb-1">
                 Operations &amp; Growth Lead
               </h3>
-              <p className="font-mono text-sm text-sage mb-3">
+              <p className="font-mono text-body text-sage mb-3">
                 Imagine Software — Student Organization
               </p>
-              <p className="text-sm text-text-muted leading-relaxed">
+              <p className="text-body text-text-muted leading-relaxed">
                 Scaled student tech org 55% from 450 to 700 members. Conducted
                 20+ technical interviews for client project staffing.
               </p>
@@ -955,16 +1042,16 @@ export default function Home() {
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-sage border-2 border-bg" />
-              <p className="font-mono text-xs text-sage mb-1">
+              <p className="font-mono text-label text-sage mb-1.5">
                 2022 — May 2026
               </p>
-              <h3 className="font-display text-2xl font-light text-text mb-1">
+              <h3 className="font-display text-sub-heading font-light text-text mb-1">
                 B.S. Computer Science
               </h3>
-              <p className="font-mono text-sm text-sage mb-3">
+              <p className="font-mono text-body text-sage mb-3">
                 Michigan State University — Business Minor
               </p>
-              <p className="text-sm text-text-muted leading-relaxed">
+              <p className="text-body text-text-muted leading-relaxed">
                 GPA 3.8. SpartaHack XI Blockchain Track 3rd Place.
               </p>
             </motion.div>
@@ -987,7 +1074,8 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="mb-16"
           >
-            <p className="font-mono text-xs text-sage tracking-[0.3em] uppercase mb-4">
+            {/* L1 */}
+            <p className="font-mono text-label text-sage tracking-[0.25em] uppercase mb-5">
               Case Studies
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-light tracking-tight">
@@ -1018,7 +1106,8 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="mb-16"
           >
-            <p className="font-mono text-xs text-sage tracking-[0.3em] uppercase mb-4">
+            {/* L1 */}
+            <p className="font-mono text-label text-sage tracking-[0.25em] uppercase mb-5">
               Toolkit
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-light tracking-tight">
@@ -1036,14 +1125,15 @@ export default function Home() {
                 whileInView="visible"
                 viewport={{ once: true }}
               >
-                <h3 className="font-mono text-xs text-accent-blue tracking-wider uppercase mb-4">
+                {/* L1 */}
+                <h3 className="font-mono text-label text-accent-blue tracking-wider uppercase mb-4">
                   {category}
                 </h3>
-                <ul className="space-y-2">
+                <ul className="space-y-2.5">
                   {items.map((item) => (
                     <li
                       key={item}
-                      className="text-sm text-text-muted hover:text-text transition-colors duration-200"
+                      className="text-body text-text-muted hover:text-text transition-colors duration-200"
                     >
                       {item}
                     </li>
@@ -1066,7 +1156,7 @@ export default function Home() {
               href="https://github.com/stdmitry04"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-xs text-[#9CA3AF] hover:text-[#c9d1d9] transition-colors duration-300"
+              className="font-mono text-label text-[#9CA3AF] hover:text-[#c9d1d9] transition-colors duration-300"
             >
               GitHub
             </a>
@@ -1074,13 +1164,13 @@ export default function Home() {
               href="https://linkedin.com/in/stdmitry04"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-xs text-[#4A90C2] hover:text-[#5BA0D6] transition-colors duration-300"
+              className="font-mono text-label text-[#4A90C2] hover:text-[#5BA0D6] transition-colors duration-300"
             >
               LinkedIn
             </a>
             <a
               href="mailto:starodu5@gmail.com"
-              className="font-mono text-xs text-[#C0796F] hover:text-[#EA4335] transition-colors duration-300"
+              className="font-mono text-label text-[#C0796F] hover:text-[#EA4335] transition-colors duration-300"
               onClick={(e) => {
                 e.preventDefault();
                 navigator.clipboard.writeText("starodu5@gmail.com");
