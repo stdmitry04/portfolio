@@ -20,7 +20,20 @@ import { useState, useEffect, useCallback } from "react";
 
 /* ─────────────────────────── DATA ─────────────────────────── */
 
-const projects = [
+type Project = {
+  title: string;
+  hook: string;
+  year: string;
+  role: string;
+  stack: string[];
+  github: string;
+  media: { type: "image" | "video"; src: string }[];
+  link?: string;
+  technical: { heading: string; points: string[] };
+  business: { heading: string; points: string[] };
+};
+
+const projects: Project[] = [
   {
     title: "K-12 ERP Platform",
     hook: "Enterprise ERP platform for K-12 school districts — HR, hiring, and onboarding in one system. Secured a pilot with the 7th largest school district in Illinois.",
@@ -426,7 +439,7 @@ function ProjectCard({
   project,
   index,
 }: {
-  project: (typeof projects)[0];
+  project: Project;
   index: number;
 }) {
   const [tab, setTab] = useState<"technical" | "business">("technical");
