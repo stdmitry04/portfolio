@@ -776,7 +776,8 @@ export default function Home() {
               custom={2}
               className="text-lg md:text-xl text-text-muted leading-relaxed max-w-lg mb-10"
             >
-              Building AI-powered platforms and high-load B2B systems.
+              Building enterprise B2B software end-to-end — architecture,
+              deployment, and the client work that gets it into production.
               Michigan State &apos;26.
             </motion.p>
 
@@ -787,8 +788,8 @@ export default function Home() {
               className="grid grid-cols-2 gap-x-8 gap-y-5 mb-10 max-w-lg"
             >
               {[
-                { stat: "2 platforms in production", detail: "school district ERP + AI platform for 5 universities" },
-                { stat: "Shipped ahead of schedule", detail: "seed-stage startup, 4-person team" },
+                { stat: "ERP in production", detail: "7th largest school district in Illinois" },
+                { stat: "AI platform in production", detail: "deployed to 5 universities across US & India" },
                 { stat: "Scaled org 55%", detail: "450 to 700 members in 4 months" },
                 { stat: "SpartaHack XI", detail: "Blockchain Track 3rd Place" },
               ].map((h, i) => (
