@@ -22,8 +22,8 @@ import { useState, useEffect, useCallback } from "react";
 
 const projects = [
   {
-    title: "APS Hiring Platform",
-    hook: "Production ATS processing 1,000+ applications daily for K-12 school districts.",
+    title: "K-12 ERP Platform",
+    hook: "Enterprise ERP platform for K-12 school districts — HR, hiring, and onboarding in one system. Secured a pilot with the 7th largest school district in Illinois.",
     year: "2024 — Present",
     role: "Software Developer @ APS Data Technologies",
     stack: ["Django REST", "Next.js 15", "PostgreSQL", "React 19", "TypeScript", "Tailwind"],
@@ -32,11 +32,12 @@ const projects = [
     technical: {
       heading: "Architecture & Scale",
       points: [
-        "Full hiring pipeline: job posting, applicant tracking, interview scheduling, offer generation, document collection, and onboarding — all in one system.",
+        "Full ERP pipeline: job posting, applicant tracking, interview scheduling, offer generation, document collection, and onboarding — all in one system.",
         "Django 5.2 + DRF backend with PostgreSQL, serving a Next.js 15 + React 19 frontend. Type-safe API layer with TypeScript throughout.",
         "Multi-tenant architecture supporting concurrent school districts with isolated data. Role-based access across administrators, HR staff, and hiring managers.",
         "DocuSign integration for electronic signatures, SSO for district-wide authentication, and automated email workflows for candidate communication.",
-        "Public demo represents ~40% of the production system — proprietary integrations and multi-tenant logic removed.",
+        "Fully integrated with each district's existing ERP system — new hire data syncs automatically into their current payroll and HR infrastructure so districts don't need to replace anything they already run.",
+        "Managing three environments (dev, staging, prod) on AWS — CI/CD pipeline handles automated deployments, environment promotion, and rollback.",
       ],
     },
     business: {
@@ -45,8 +46,7 @@ const projects = [
         "Replaces fragmented hiring workflows (spreadsheets, email chains, paper forms) with a unified platform for K-12 school districts.",
         "Processes 1,000+ applications daily in production — real scale with real school districts depending on uptime.",
         "Reduces time-to-hire by consolidating every step from job posting to employee onboarding into a single dashboard.",
-        "Serves the EdTech B2B market: districts are the customers, applicants are the users. Both sides need intuitive UX despite complex backend logic.",
-        "Directly contributes to staffing outcomes in education — a sector where unfilled positions have immediate impact on students.",
+        "Secured a pilot with the 7th largest school district in Illinois — the platform is now the operational backbone for their HR and hiring processes.",
       ],
     },
   },
@@ -74,8 +74,7 @@ const projects = [
         "Streamlines the college application process — a notoriously fragmented experience for students navigating multiple portals and requirements.",
         "AI assistant reduces counselor workload by answering common questions about programs, deadlines, and requirements with source-backed responses.",
         "Document automation (OCR) eliminates manual data entry for transcripts — a bottleneck that slows admissions processing by days.",
-        "Built for the higher-ed admissions market where institutions manage thousands of applications per cycle with limited staff.",
-        "Production system processes real applications for real institutions — not a proof of concept.",
+        "Deployed to 2 partnering universities in the US and 3 in India — processing real applications for real institutions.",
       ],
     },
   },
@@ -91,25 +90,22 @@ const projects = [
       heading: "System Design",
       points: [
         "Multi-dimensional review system: 5 rating axes (overall, difficulty, materials, workload, grading fairness) with professor and semester tracking.",
-        "AI course advisor: GPT-4 API route fetches relevant course reviews from Supabase and uses them as context to provide personalized academic advice.",
-        "Supabase backend with PostgreSQL + Row-Level Security. 7-table schema: universities, courses, professors, junction tables, reviews, votes, profiles.",
-        "Authentication via Supabase Auth (email + Google OAuth) with university email domain validation — only verified students can submit reviews.",
-        "Review voting system (helpful/unhelpful) with per-user deduplication. CI/CD via GitHub Actions.",
+        "Pagination and incremental fetching across courses and reviews — prevents loading full datasets on mount and keeps the UI responsive as data grows.",
+        "Supabase backend with PostgreSQL and Row-Level Security. Handles data isolation, university email domain validation, and Google OAuth without a custom auth layer.",
       ],
     },
     business: {
       heading: "From Hackathon to Product",
       points: [
-        "Built core at SpartaHack X (24-hour hackathon), then continued development for 9 months post-event — 153 total commits across the team.",
         "Solves a real problem: students choose courses with incomplete information. RateMyProfessor covers professors, but not the course content itself.",
-        "University email gating ensures review quality and trustworthiness — only verified students from the relevant institution can contribute.",
-        "AI advisor turns raw review data into actionable guidance: \"Based on 47 reviews, CSE 331 with Dr. X has heavy workload but excellent materials.\"",
-        "Transactional email via Resend for verification flows. Deployed on Vercel for production-grade reliability.",
+        "University email gating ensures review quality — only verified students from the relevant institution can contribute.",
+        "After SpartaHack, brought in 2 additional developers to keep building for 3 months. Submitted to project judging at MSU's second-largest CS club and placed 3rd.",
+        "2,000 unique visitors in the first week after launch.",
       ],
     },
   },
   {
-    title: "Quikard",
+    title: "QuiKard",
     hook: "Digital business card platform with QR code generation and Apple Wallet integration.",
     year: "2025",
     role: "Solo Developer",
@@ -120,15 +116,12 @@ const projects = [
       { type: "image" as const, src: "/previews/quikard-2.png" },
       { type: "image" as const, src: "/previews/quikard-3.png" },
     ],
-    link: "https://quikard.net",
     technical: {
       heading: "Full-Stack Implementation",
       points: [
         "Next.js 15 + TypeScript frontend with Tailwind styling. FastAPI + SQLAlchemy backend with PostgreSQL/SQLite database.",
         "Apple Wallet Pass API integration: generates .pkpass files for NFC-enabled business card sharing directly from iPhone Wallet.",
         "QR code generation and encoding: each card gets a unique shareable URL and auto-generated QR code for physical-world distribution.",
-        "Docker Compose for full-stack local development. Deployed at quikard.net with production traffic.",
-        "Solo project — designed, built, and shipped end-to-end without a team.",
       ],
     },
     business: {
@@ -136,9 +129,7 @@ const projects = [
       points: [
         "Addresses a real friction point: paper business cards are wasteful and forgettable. Digital alternatives exist but most lack Apple Wallet integration.",
         "Apple Wallet pass means the card lives alongside boarding passes and tickets — high visibility, zero app install required for recipients.",
-        "Live at quikard.net with real users creating and sharing cards. Not a demo — a shipped product.",
-        "Solo project demonstrates full product ownership: ideation, design, engineering, deployment, and iteration.",
-        "Potential B2B angle: companies can issue branded digital cards to employees with consistent formatting and contact info.",
+        "B2B angle: companies can issue branded digital cards to employees with consistent formatting and contact info.",
       ],
     },
   },
@@ -150,15 +141,13 @@ const projects = [
     stack: ["Next.js 15", "Django REST", "Gemini AI", "Solidity", "Zustand", "Leaflet"],
     github: "https://github.com/stdmitry04/Volunteer_Matchmaker",
     media: [] as { type: "image" | "video"; src: string }[],
-    link: "https://volunteer-matchmaker.vercel.app",
     technical: {
       heading: "24-Hour Architecture",
       points: [
         "Swipe-based matching engine with composite scoring: proximity (geodistance), skills overlap, job urgency (time-decay weighting), and volunteer reliability rating.",
         "Real-time chat between matched volunteer and requester — no personal contact info exchanged. JWT-authenticated WebSocket-style messaging.",
-        "Google Gemini API for AI-enhanced job descriptions and auto-generated listing images. Prompt engineering for community-appropriate tone.",
+        "Google Gemini API for AI-enhanced job descriptions and auto-generated listing images.",
         "Ethereum smart contract (VolunteerLeaderboard.sol) for transparent donation tracking. Ethers.js frontend integration with on-chain monthly rounds.",
-        "Leaflet maps with heatmap overlays for need-density visualization. Privacy-first: city-level display only, GPS coordinates never exposed.",
       ],
     },
     business: {
@@ -168,44 +157,14 @@ const projects = [
         "Swipe UX (familiar from dating apps) lowers the barrier to engagement — volunteers browse opportunities casually rather than committing upfront.",
         "Badge achievement system drives retention: Specialist, Firefighter, Anchor, Inclusionist tracks reward consistent, diverse volunteering.",
         "Blockchain donation leaderboard adds transparency for organizational donors — funds tracked on-chain, monthly rounds incentivize sustained giving.",
-        "Built and deployed in 24 hours with a 4-person team. Live at volunteer-matchmaker.vercel.app. Demonstrates rapid execution under extreme constraints.",
-      ],
-    },
-  },
-  {
-    title: "Practice Proj",
-    hook: "AI-powered coding practice platform with sandboxed execution and GPT-4 generated challenges.",
-    year: "2026",
-    role: "Solo Developer",
-    stack: ["Next.js 15", "FastAPI", "GPT-4", "PostgreSQL", "Monaco Editor", "Docker"],
-    github: "https://github.com/stdmitry04/practice-proj",
-    media: [] as { type: "image" | "video"; src: string }[],
-    technical: {
-      heading: "Execution Engine",
-      points: [
-        "GPT-4 generates unique coding exercises with test cases across React, JavaScript, Python, and C++. Structured output ensures consistent exercise format.",
-        "Monaco Editor integration (same editor as VS Code) with language-specific syntax highlighting, autocompletion, and split-panel UI.",
-        "Sandboxed code execution workers: user-submitted code runs in isolated environments with resource limits. Real-time test validation against generated test cases.",
-        "FastAPI + PostgreSQL backend. Zustand for frontend state management. Docker Compose for reproducible multi-service development.",
-        "Full exercise lifecycle: generate → code → execute → validate → feedback. All in-browser, no local toolchain required.",
-      ],
-    },
-    business: {
-      heading: "Learning Tool Design",
-      points: [
-        "Solves the \"stale problem set\" issue: AI-generated exercises are unique each time, preventing memorization and encouraging genuine problem-solving.",
-        "Multi-language support (React, JS, Python, C++) makes it useful across different courses and skill levels — not locked to one ecosystem.",
-        "Browser-based execution means zero setup: students don't need to install compilers, configure environments, or manage dependencies.",
-        "Immediate feedback loop (write → run → see results) mirrors the way professional developers work, building good habits early.",
-        "Solo project demonstrating AI integration for education — a growing market where personalized practice at scale is a key differentiator.",
       ],
     },
   },
   {
     title: "Multi-Agent Simulation Engine",
-    hook: "Stride scheduler and tiered execution system for a real-time civilization simulation. MSU Capstone (CSE 498).",
+    hook: "Stride scheduler and tiered execution system for a real-time civilization simulation.",
     year: "2026",
-    role: "Scheduler Lead — Team of 30 (4th most active contributor, 18 commits)",
+    role: "Product Lead — Team of 30 (18 commits)",
     stack: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Unit Testing"],
     github: "https://github.com/CSE498/Spring2026-CompanyC",
     media: [] as { type: "image" | "video"; src: string }[],
@@ -220,24 +179,21 @@ const projects = [
       ],
     },
     business: {
-      heading: "Capstone & Team Scale",
+      heading: "Product Development & Team Scale",
       points: [
-        "MSU CSE 498 capstone project — semester-long team of 30 engineers building a tile-based civilization simulation with AI-driven agents.",
+        "Defined the game type, scope, look and feel, and the role of AI agents within the simulation — presented the vision to the full 30-person team and drove alignment before a line of code was written.",
         "Owned the scheduling subsystem end-to-end: designed the architecture, wrote the roadmap (7-phase plan), implemented and tested Phases 1-2, then handed off cleanly to downstream teams.",
-        "~1,500 lines of code across 3 merged pull requests, all code-reviewed by team leads. 4th most active contributor out of 30.",
-        "Scheduling system directly enables the game loop: without proportional frame budget allocation, 50+ concurrent agents would starve each other and drop below real-time.",
-        "Demonstrates ability to work in large-team engineering with branching strategy, PR workflow, and cross-team API design — the same process used in industry.",
+        "The scheduling layer is what makes 50,000+ concurrent agents possible — without proportional frame budget allocation agents starve each other and the simulation breaks down entirely.",
       ],
     },
   },
 ];
 
 const skills = {
-  "AI / ML": ["OpenAI API", "RAG Systems", "Qdrant Vector DB", "Google Gemini", "GPT-4", "Embeddings"],
-  Backend: ["Django REST", "FastAPI", "Node.js", "PostgreSQL", "Redis", "Supabase"],
-  Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Zustand", "Framer Motion"],
-  Systems: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Process Management"],
-  Infrastructure: ["AWS (EC2, S3, RDS)", "Docker", "Terraform", "Vercel", "GitHub Actions", "CI/CD"],
+  "AI / ML": ["RAG Systems", "Vector DBs", "Embeddings", "Agentic Systems", "Frontier LLM APIs"],
+  Backend: ["Python", "Django REST", "FastAPI", "Node.js", "PostgreSQL", "Redis"],
+  Frontend: ["TypeScript", "React", "Next.js", "Tailwind CSS", "Zustand"],
+  Infrastructure: ["AWS (ECS, S3, RDS)", "Docker", "Terraform", "GitHub Actions", "CI/CD"],
 };
 
 /* ─────────────────────────── ANIMATIONS ─────────────────────────── */
@@ -787,7 +743,7 @@ export default function Home() {
               custom={0}
               className="font-mono text-label text-accent-blue tracking-[0.25em] uppercase mb-5"
             >
-              Full-Stack Engineer
+              Software Engineer
             </motion.p>
 
             {/* L2: Name — dominant anchor. Largest element on page. */}
@@ -818,9 +774,9 @@ export default function Home() {
               className="grid grid-cols-2 gap-x-8 gap-y-5 mb-10 max-w-lg"
             >
               {[
-                { stat: "AI platform in production", detail: "serving 5 university partners" },
-                { stat: "Shipped pilot ahead of schedule", detail: "seed-stage startup, 4-person team" },
-                { stat: "Scaled org 55%", detail: "450 to 700 members" },
+                { stat: "2 platforms in production", detail: "school district ERP + AI platform for 5 universities" },
+                { stat: "Shipped ahead of schedule", detail: "seed-stage startup, 4-person team" },
+                { stat: "Scaled org 55%", detail: "450 to 700 members in 4 months" },
                 { stat: "SpartaHack XI", detail: "Blockchain Track 3rd Place" },
               ].map((h, i) => (
                 <motion.div
@@ -915,16 +871,18 @@ export default function Home() {
             <p className="font-display text-2xl md:text-3xl font-light leading-relaxed text-text">
               Software Developer at{" "}
               <span className="text-accent-blue">APS Data Technologies</span>,
-              building production AI-powered platforms and high-load B2B
-              systems. Studying Computer Science with a Business minor at
-              Michigan State University — GPA 3.8, graduating May 2026.
+              building and deploying enterprise B2B software end-to-end —
+              from system architecture to the client conversations that get
+              it live. Graduated with a B.S. in Computer Science and Business
+              minor, GPA 3.75, from Michigan State University in May 2026.
             </p>
             {/* L3 */}
             <p className="mt-6 text-body-lg text-text-muted leading-relaxed">
-              Focused on distributed systems, AI/ML, and high-performance
-              computing. I build things that ship — from enterprise platforms
-              processing thousands of applications daily to hackathon projects
-              that turn into real products.
+              I work across the full stack and stay embedded in client and
+              stakeholder conversations — scoping requirements, aligning on
+              technical direction, and owning the infrastructure that keeps
+              things running in production. My goal is always shipping
+              something that holds up and moves the right needle.
             </p>
           </motion.div>
         </div>
@@ -1043,16 +1001,16 @@ export default function Home() {
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-sage border-2 border-bg" />
               <p className="font-mono text-label text-sage mb-1.5">
-                2022 — May 2026
+                Aug 2022 — May 2026
               </p>
               <h3 className="font-display text-sub-heading font-light text-text mb-1">
-                B.S. Computer Science
+                B.S. Computer Science, Business Minor
               </h3>
               <p className="font-mono text-body text-sage mb-3">
-                Michigan State University — Business Minor
+                Michigan State University
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                GPA 3.8. SpartaHack XI Blockchain Track 3rd Place.
+                GPA 3.75. SpartaHack XI Blockchain Track 3rd Place.
               </p>
             </motion.div>
           </div>
