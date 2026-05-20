@@ -103,10 +103,9 @@ const projects: Project[] = [
       heading: "Architecture & Implementation",
       points: [
         "JWT-authenticated REST API with React + Express + MongoDB. Role-based access control covering customer accounts, admin inventory management, and B2B bulk order flows.",
-        "CI/CD pipeline reduced deployment from hours to minutes — enabled daily release cadence across a 4-person team under seed-stage ambiguity.",
         "Single codebase serving four product surfaces: B2B/B2C storefront, editorial blog, brand marketing pages, and transactional notification service.",
-        "Drove cross-functional alignment on API contracts between frontend and backend — no dedicated tech lead, so this kept integration from drifting.",
         "Frontend built pixel-perfect to Figma specs — no designer handoff ambiguity, just direct implementation against the provided designs.",
+        "Drove alignment between stakeholder, design, and development team to deliver on time"
       ],
     },
     business: {
@@ -911,7 +910,7 @@ export default function Home() {
               About
             </p>
             <p className="font-display text-2xl md:text-3xl font-light leading-relaxed text-text">
-              Software Developer at{" "}
+              As a Software Developer at{" "}
               <span className="text-accent-blue">APS Data Technologies</span>,
               I work across the full stack and stay embedded in client and
               stakeholder conversations — scoping requirements, aligning on
