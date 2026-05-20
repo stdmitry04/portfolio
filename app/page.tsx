@@ -68,7 +68,7 @@ const projects: Project[] = [
     hook: "College application platform with RAG-powered AI assistant, OCR pipelines, and document processing.",
     year: "2024 — 2025",
     role: "Software Developer @ APS Data Technologies",
-    stack: ["Django REST", "Next.js 15", "OpenAI", "Qdrant", "AWS S3/EC2/RDS", "Docker"],
+    stack: ["Django REST", "Next.js 15", "OpenAI", "Qdrant", "AWS S3/ECS/RDS", "Docker"],
     github: "https://github.com/stdmitry04/campus-usa-demo",
     media: [] as { type: "image" | "video"; src: string }[],
     technical: {
@@ -96,7 +96,7 @@ const projects: Project[] = [
     hook: "University course review platform with AI-powered academic advisor. Built at SpartaHack X in 24 hours, shipped for real use.",
     year: "2025",
     role: "Lead Developer (85 of 153 commits)",
-    stack: ["Next.js 14", "Supabase", "GPT-4", "TypeScript", "Tailwind", "Resend"],
+    stack: ["Next.js 14", "Supabase", "GPT-4", "TypeScript", "Tailwind"],
     github: "https://github.com/neontap/spartahack",
     media: [{ type: "video" as const, src: "/previews/coursechecker.mp4" }],
     technical: {
@@ -151,7 +151,7 @@ const projects: Project[] = [
     hook: "\"Tinder for volunteering\" — connecting helpers with people who need them. Built in 24 hours at SpartaHack XI. Blockchain Track 3rd Place.",
     year: "2026",
     role: "Team of 4 — SpartaHack XI | Blockchain Track 3rd Place",
-    stack: ["Next.js 15", "Django REST", "Gemini AI", "Solidity", "Zustand", "Leaflet"],
+    stack: ["Next.js 15", "Django REST", "Gemini AI", "Solidity", "Zustand"],
     github: "https://github.com/stdmitry04/Volunteer_Matchmaker",
     media: [] as { type: "image" | "video"; src: string }[],
     technical: {
@@ -776,7 +776,7 @@ export default function Home() {
               custom={2}
               className="text-lg md:text-xl text-text-muted leading-relaxed max-w-lg mb-10"
             >
-              Building enterprise B2B software end-to-end — architecture,
+              Building B2B software end-to-end — architecture,
               deployment, and the client work that gets it into production.
               Michigan State &apos;26.
             </motion.p>
@@ -885,18 +885,11 @@ export default function Home() {
             <p className="font-display text-2xl md:text-3xl font-light leading-relaxed text-text">
               Software Developer at{" "}
               <span className="text-accent-blue">APS Data Technologies</span>,
-              building and deploying enterprise B2B software end-to-end —
-              from system architecture to the client conversations that get
-              it live. Graduated with a B.S. in Computer Science and Business
-              minor, GPA 3.75, from Michigan State University in May 2026.
-            </p>
-            {/* L3 */}
-            <p className="mt-6 text-body-lg text-text-muted leading-relaxed">
               I work across the full stack and stay embedded in client and
               stakeholder conversations — scoping requirements, aligning on
               technical direction, and owning the infrastructure that keeps
-              things running in production. My goal is always shipping
-              something that holds up and moves the right needle.
+              things running in production. My goal is shipping
+              products that holds up and move the right needle.
             </p>
           </motion.div>
         </div>
@@ -938,7 +931,7 @@ export default function Home() {
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
               <p className="font-mono text-label text-accent-blue mb-1.5">
-                April 2024 — Present
+                April 2025 — Present
               </p>
               <h3 className="font-display text-sub-heading font-light text-text mb-1">
                 Software Developer
@@ -947,8 +940,8 @@ export default function Home() {
                 APS Data Technologies — EdTech B2B
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                Building production AI-powered ATS systems processing 1,000+
-                applications daily for K-12 school districts. Full-stack work
+                Building production AI-powered ERP system (hiring and timesheet tracking modules)
+                for K-12 school districts. Full-stack work
                 across Django REST, Next.js, PostgreSQL, and AWS. Led
                 development of a RAG-powered college application platform with
                 OCR document pipelines and vector search.
@@ -976,8 +969,7 @@ export default function Home() {
               <p className="text-body text-text-muted leading-relaxed">
                 Delivered e-commerce platform with 4-person team 25% ahead of
                 timeline. Built frontend and CI/CD pipeline reducing deployment
-                from hours to minutes. Architected RESTful API connecting React
-                to Express/MongoDB with JWT auth and role-based access control.
+                from hours to minutes. Architected RESTful API and role-based access control.
               </p>
             </motion.div>
 
@@ -1024,7 +1016,7 @@ export default function Home() {
                 Michigan State University
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                GPA 3.75. SpartaHack XI Blockchain Track 3rd Place.
+                GPA 3.75. SpartaHack XI Blockchain Track 3rd Place (among 100+ teams).
               </p>
             </motion.div>
           </div>
