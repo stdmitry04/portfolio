@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Dmitry Starodubtsev — Full-Stack Software Engineer";
+export const alt = "Dmitry Starodubtsev — Backend & AI Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -58,7 +58,7 @@ export default async function Image() {
               fontWeight: 500,
             }}
           >
-            FULL-STACK SOFTWARE ENGINEER
+            BACKEND &amp; AI ENGINEER
           </div>
 
           <div
@@ -94,8 +94,8 @@ export default async function Image() {
               marginBottom: 40,
             }}
           >
-            Building AI-powered platforms and high-load B2B systems.
-            Michigan State University CS &apos;26.
+            Building production RAG pipelines, agentic systems, and
+            multi-tenant B2B infrastructure. Michigan State CS &apos;26.
           </div>
 
           <div style={{ display: "flex", gap: 24 }}>

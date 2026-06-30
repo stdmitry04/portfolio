@@ -20,6 +20,17 @@ import { useState, useEffect, useCallback } from "react";
 
 /* ─────────────────────────── DATA ─────────────────────────── */
 
+type Media = { type: "image" | "video"; src: string };
+
+// A named group of bullets inside an Engineering tab (renders a #### sub-header).
+type Section = { header: string; points: string[] };
+
+// Engineering tab: either flat bullets (compact projects) or named sub-sections.
+type EngTab = { label: string; sections?: Section[]; points?: string[] };
+
+// Impact tab: prose-leaning bullets, no sub-headers.
+type ImpactTab = { label: string; points: string[] };
+
 type Project = {
   title: string;
   hook: string;
@@ -27,97 +38,159 @@ type Project = {
   role: string;
   stack: string[];
   github: string;
-  media: { type: "image" | "video"; src: string }[];
+  media: Media[];
   link?: string;
-  technical: { heading: string; points: string[] };
-  business: { heading: string; points: string[] };
+  tier: 1 | 2;
+  engineering: EngTab;
+  impact?: ImpactTab; // tier 1 only
+  note?: string; // tier 2 — replaces an empty business tab
 };
 
 const projects: Project[] = [
+  /* ───────────── TIER 1 — PRODUCTION WORK ───────────── */
   {
     title: "K-12 ERP Platform",
-    hook: "Enterprise ERP platform for K-12 school districts — HR, hiring, and onboarding in one system. Secured a pilot with the 7th largest school district in Illinois.",
-    year: "2024 — Present",
-    role: "Software Developer @ APS Data Technologies",
-    stack: ["Django REST", "Next.js 15", "PostgreSQL", "React 19", "TypeScript", "Tailwind"],
+    hook: "Enterprise ERP platform for K-12 school districts — hiring pipeline, timesheet tracking, and onboarding in one system. Secured a pilot with the 7th largest school district in Illinois, serving 1,650+ daily active users.",
+    year: "2025 — Present",
+    role: "Software Engineer @ APS Data Technologies",
+    stack: ["Django REST", "Celery", "Next.js 15", "PostgreSQL", "AWS", "Terraform"],
     github: "https://github.com/stdmitry04/aps-main-demo",
-    media: [] as { type: "image" | "video"; src: string }[],
-    technical: {
-      heading: "Architecture & Scale",
-      points: [
-        "Full ERP pipeline: job posting, applicant tracking, interview scheduling, offer generation, document collection, and onboarding — all in one system.",
-        "Django 5.2 + DRF backend with PostgreSQL, serving a Next.js 15 + React 19 frontend. Type-safe API layer with TypeScript throughout.",
-        "Multi-tenant architecture supporting concurrent school districts with isolated data. Role-based access across administrators, HR staff, and hiring managers.",
-        "DocuSign integration for electronic signatures, SSO for district-wide authentication, and automated email workflows for candidate communication.",
-        "Fully integrated with each district's existing ERP system — new hire data syncs automatically into their current payroll and HR infrastructure so districts don't need to replace anything they already run.",
-        "Managing three environments (dev, staging, prod) on AWS — CI/CD pipeline handles automated deployments, environment promotion, and rollback.",
+    media: [],
+    tier: 1,
+    engineering: {
+      label: "Engineering",
+      sections: [
+        {
+          header: "Hiring Pipeline",
+          points: [
+            "Async candidate screening pipeline (Django + Celery + Redis) with idempotent retry logic and dead-letter queue — cut processing time 10x (2 hrs → 12 min), directly unblocking expansion to additional school districts.",
+            "REST API exposed end-to-end to a Next.js 15 + React 19 frontend with Zustand-managed candidate state, iterated through live demos with district stakeholders.",
+            "DocuSign integration for electronic offer signatures, SSO for district-wide authentication, automated email workflows for candidate communication.",
+          ],
+        },
+        {
+          header: "Permissions & Access Control",
+          points: [
+            "Capability-based, deny-by-default RBAC — permission keys use a module.submodule + view/edit model (similar to Kubernetes resource access). A role can act only on explicitly granted capabilities; absence of a grant means denied, with no separate deny rules to maintain.",
+            "Central permission registry materializes into the database on deploy and acts as the single source of truth — role grants set-sync against it on every update, purging any stale access left over from prior configurations.",
+            "Enforced identically on backend (DRF permission classes) and frontend (route and component gating mirroring the same deny-by-default model) — live permission invalidation propagates to active sessions within 60 seconds, no re-login required.",
+            "Districts self-serve role creation and permission configuration at runtime — no code changes or redeploys required for a new role or access change.",
+          ],
+        },
+        {
+          header: "Infrastructure",
+          points: [
+            "Multi-tenant architecture with per-district data isolation enforced at the query layer — every request scoped to caller's tenant and role.",
+            "AWS infrastructure (ECS, RDS, S3, Terraform) supporting 1,650+ DAU and 500 AI-processed resumes/day — autoscaling thresholds and connection pool limits sized to actual load.",
+            "CloudWatch alerting on P99 latency, container logs, and error rates across dev/staging/prod.",
+            "Fully integrated with each district's existing payroll and HR systems — new hire data syncs automatically so districts don't replace infrastructure they already run.",
+          ],
+        },
       ],
     },
-    business: {
-      heading: "Impact & Outcomes",
+    impact: {
+      label: "Impact",
       points: [
-        "Replaces fragmented hiring workflows (spreadsheets, email chains, paper forms) with a unified platform for K-12 school districts.",
-        "Processes 1,000+ applications daily in production — real scale with real school districts depending on uptime.",
-        "Reduces time-to-hire by consolidating every step from job posting to employee onboarding into a single dashboard.",
-        "Secured a pilot with the 7th largest school district in Illinois — the platform is now the operational backbone for their HR and hiring processes.",
+        "Hiring pipeline cut candidate screening time 10x — district HR teams moved from 2-hour manual review cycles to 12-minute automated screening, directly unblocking expansion to additional school districts.",
+        "Districts manage their own roles and permissions without filing tickets — a permission change that previously required a developer and a deploy now takes minutes in the admin UI.",
+        "1,650+ daily active users across HR, hiring, and timesheet workflows at the 7th largest K-12 district in Illinois.",
+        "New hire data syncs automatically into existing district payroll and HR systems — zero disruption to current infrastructure.",
       ],
     },
   },
   {
     title: "Campus USA",
-    hook: "College application platform with RAG-powered AI assistant, OCR pipelines, and document processing.",
+    hook: "College application platform with a RAG-powered AI assistant, OCR document pipelines, and async processing infrastructure. Serving 200+ daily student queries across 5 university partners in the US and India.",
     year: "2024 — 2025",
-    role: "Software Developer @ APS Data Technologies",
-    stack: ["Django REST", "Next.js 15", "OpenAI", "Qdrant", "AWS S3/ECS/RDS", "Docker"],
+    role: "Software Engineer @ APS Data Technologies",
+    stack: ["Django REST", "Qdrant", "OpenAI", "LangGraph", "AWS S3/ECS/RDS", "Docker"],
     github: "https://github.com/stdmitry04/campus-usa-demo",
-    media: [] as { type: "image" | "video"; src: string }[],
-    technical: {
-      heading: "AI & Infrastructure",
-      points: [
-        "RAG-based AI chat assistant: OpenAI embeddings stored in Qdrant vector database, with retrieval-augmented generation for contextual answers about universities and programs.",
-        "OCR pipeline for automated transcript and resume parsing — extracts structured data from uploaded documents for application processing.",
-        "AWS infrastructure: S3 with pre-signed URLs for secure file management, EC2 for compute, RDS for managed PostgreSQL.",
-        "Django REST + Next.js 15 full-stack architecture. Docker Compose for local development and deployment orchestration.",
-        "Demo represents ~30-40% of the production system. Full version includes additional AI features and institutional integrations under NDA.",
+    media: [],
+    tier: 1,
+    engineering: {
+      label: "AI & Systems",
+      sections: [
+        {
+          header: "RAG Pipeline",
+          points: [
+            "Production RAG pipeline: OpenAI embeddings stored in Qdrant vector database, cross-encoder reranker re-scoring top-k candidates before context is passed to the LLM — closes the gap on queries where semantic similarity alone surfaces the wrong document.",
+            "Per-user memory layer (Postgres-backed, LangGraph orchestration) scoping stored context to document metadata and session summaries — avoids context window bloat across multi-session use.",
+            "Serving 200+ daily student queries across 5 university partners.",
+          ],
+        },
+        {
+          header: "Evaluation & Tuning",
+          points: [
+            "Built a manual evaluation harness of 100+ query/document pairs against a 1k+ document corpus to measure retrieval quality before shipping any change to the pipeline.",
+            "Tuned chunk size, overlap, and similarity threshold iteratively against the same fixed eval set — each variable changed in isolation to measure its isolated effect on retrieval accuracy.",
+            "Reached 95%+ retrieval accuracy across all university partners. Retrieval misses surface a structured \"not found\" response rather than a confident wrong answer.",
+          ],
+        },
+        {
+          header: "Infrastructure",
+          points: [
+            "AWS: ECS for container orchestration, RDS for managed PostgreSQL, S3 with pre-signed URLs for secure document storage.",
+            "Async document processing pipeline for OCR transcript and resume parsing — extracts structured data from uploaded files for downstream application processing.",
+            "Django REST + Next.js 15 full-stack. Docker Compose for local development parity with production.",
+            "Three-environment setup (dev/staging/prod) with CI/CD pipeline for automated deployments and rollback.",
+          ],
+        },
       ],
     },
-    business: {
-      heading: "Product Vision",
+    impact: {
+      label: "Impact",
       points: [
-        "Streamlines the college application process — a notoriously fragmented experience for students navigating multiple portals and requirements.",
-        "AI assistant reduces counselor workload by answering common questions about programs, deadlines, and requirements with source-backed responses.",
-        "Document automation (OCR) eliminates manual data entry for transcripts — a bottleneck that slows admissions processing by days.",
-        "Deployed to 2 partnering universities in the US and 3 in India — processing real applications for real institutions.",
+        "AI assistant handles 200+ student queries daily across 5 university partners — students get contextual answers about programs, requirements, and deadlines without waiting for an advisor response.",
+        "OCR pipeline automated document parsing that was previously done manually per applicant.",
+        "Some enterprise integrations are omitted from the demo for confidentiality; the architecture reflected here represents the core production system.",
       ],
     },
   },
   {
     title: "Safety Straw",
-    hook: "E-commerce platform for a drug-detection safety startup — B2B/B2C storefront, blog, brand marketing, and notification service unified in one system. Delivered 25% ahead of timeline.",
+    hook: "E-commerce platform for a drug-detection safety startup — AI support agent, REST API backend, Stripe integration, and React storefront delivered end-to-end as sole engineer.",
     year: "2024",
     role: "Software Engineer @ Safety Straw (Seed-stage Startup)",
-    stack: ["React", "Express", "MongoDB", "JWT", "Node.js", "CI/CD"],
+    stack: ["Node.js", "Express", "MongoDB", "Stripe", "React", "CI/CD"],
     github: "https://github.com/stdmitry04",
-    media: [] as { type: "image" | "video"; src: string }[],
-    technical: {
-      heading: "Architecture & Implementation",
-      points: [
-        "JWT-authenticated REST API with React + Express + MongoDB. Role-based access control covering customer accounts, admin inventory management, and B2B bulk order flows.",
-        "Single codebase serving four product surfaces: B2B/B2C storefront, editorial blog, brand marketing pages, and transactional notification service.",
-        "Frontend built pixel-perfect to Figma specs — no designer handoff ambiguity, just direct implementation against the provided designs.",
-        "Drove alignment between stakeholder, design, and development team to deliver on time"
+    media: [],
+    tier: 1,
+    engineering: {
+      label: "Engineering",
+      sections: [
+        {
+          header: "AI Support Agent",
+          points: [
+            "Tool-calling AI agent with custom tools and sub-agents that looked up product, order, and shipment data through internal and third-party APIs — resolved 80%+ of customer inquiries autonomously, removing the need for manual ticket triage.",
+          ],
+        },
+        {
+          header: "Backend & Payments",
+          points: [
+            "REST API (Node.js + Express + MongoDB) with JWT authentication powering checkout and order management end-to-end.",
+            "Stripe integration for payment processing — checkout sessions, webhook handling for order confirmation, async queues for post-purchase notification workflows.",
+            "Single codebase serving four product surfaces: B2C storefront, B2B bulk order flow, editorial blog, and transactional notification service.",
+          ],
+        },
+        {
+          header: "Frontend & Delivery",
+          points: [
+            "React storefront built pixel-perfect to Figma designs — HTML/CSS implementation with no designer handoff ambiguity.",
+            "CI/CD pipeline (GitHub Actions, Docker) running tests and lint checks on every PR, automating deploys and cutting release cycle from hours to minutes.",
+          ],
+        },
       ],
     },
-    business: {
-      heading: "Product Context",
+    impact: {
+      label: "Impact",
       points: [
-        "Safety Straw makes straws that visually activate when drugs (GHB, ketamine) are detected in a drink — designed to prevent drug-facilitated assault in bars and social settings.",
-        "Platform serves two customer types: B2B (bars, venues, event organizers buying in bulk) and B2C (individuals buying direct) — different pricing, flows, and admin tooling for each.",
-        "Replaced what would have been four separate products — sales, marketing, content, and notifications — with a single deployable system.",
-        "Delivered 25% ahead of timeline with shifting requirements and no formal process. Seed-stage pace meant scope changed weekly; the CI/CD setup made that survivable.",
+        "AI agent resolved 80%+ of customer inquiries autonomously — support load that previously required manual responses was handled without human intervention.",
+        "Delivered the full platform end-to-end as sole engineer, 25% ahead of the original timeline.",
       ],
     },
   },
+
+  /* ───────────── TIER 2 — OTHER PROJECTS ───────────── */
   {
     title: "Multi-Agent Simulation Engine",
     hook: "Stride scheduler and tiered execution system for a real-time civilization simulation.",
@@ -125,25 +198,24 @@ const projects: Project[] = [
     role: "Product Lead — Team of 30 (18 commits)",
     stack: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Unit Testing"],
     github: "https://github.com/CSE498/Spring2026-CompanyC",
-    media: [] as { type: "image" | "video"; src: string }[],
-    technical: {
-      heading: "Scheduling Architecture",
-      points: [
-        "Stride scheduling algorithm: processes have a virtual time position (pass) and stride inversely proportional to priority. Scheduler always picks the process furthest behind in virtual time — guaranteeing fair, proportional CPU allocation.",
-        "Tiered execution system with 4 importance levels: CRITICAL (40% frame budget), GAMEPLAY (30%), ECONOMY (20%), COSMETIC (10%). Each tier backed by its own Scheduler instance via composition.",
-        "Soft budget enforcement for CRITICAL tier (up to 250ms overage allowed), hard budget cutoff for all other tiers. Prevents cosmetic processes from starving gameplay-critical ones.",
-        "C++23 compiled to WebAssembly via Emscripten. Designed interfaces between world state, agent behaviors, and rendering systems across distributed development teams.",
-        "Full test suite: unit tests for base Scheduler (add/remove/priority/peek) and TieredScheduler (budget enforcement, tier isolation, edge cases). Assert-to-throw conversion for robust error handling.",
+    media: [],
+    tier: 2,
+    engineering: {
+      label: "Engineering",
+      sections: [
+        {
+          header: "Scheduling Architecture",
+          points: [
+            "Stride scheduling algorithm: processes have a virtual time position (pass) and stride inversely proportional to priority. Scheduler always picks the process furthest behind in virtual time — guaranteeing fair, proportional CPU allocation.",
+            "Tiered execution system with 4 importance levels: CRITICAL (40% frame budget), GAMEPLAY (30%), ECONOMY (20%), COSMETIC (10%). Each tier backed by its own Scheduler instance via composition.",
+            "Soft budget enforcement for CRITICAL tier (up to 250ms overage allowed), hard budget cutoff for all other tiers. Prevents cosmetic processes from starving gameplay-critical ones.",
+            "C++23 compiled to WebAssembly via Emscripten. Designed interfaces between world state, agent behaviors, and rendering systems across distributed development teams.",
+            "Full test suite: unit tests for base Scheduler (add/remove/priority/peek) and TieredScheduler (budget enforcement, tier isolation, edge cases). Assert-to-throw conversion for robust error handling.",
+          ],
+        },
       ],
     },
-    business: {
-      heading: "Product Development & Team Scale",
-      points: [
-        "Defined the game type, scope, look and feel, and the role of AI agents within the simulation — presented the vision to the full 30-person team and drove alignment before a line of code was written.",
-        "Owned the scheduling subsystem end-to-end: designed the architecture, wrote the roadmap (7-phase plan), implemented and tested Phases 1-2, then handed off cleanly to downstream teams.",
-        "The scheduling layer is what makes 50,000+ concurrent agents possible — without proportional frame budget allocation agents starve each other and the simulation breaks down entirely.",
-      ],
-    },
+    note: "Academic engineering project — architecture and correctness, not business metrics.",
   },
   {
     title: "QuiKard",
@@ -153,24 +225,17 @@ const projects: Project[] = [
     stack: ["Next.js 15", "FastAPI", "PostgreSQL", "Apple Wallet API", "TypeScript", "Docker"],
     github: "https://github.com/stdmitry04/quikard",
     media: [
-      { type: "image" as const, src: "/previews/quikard-1.png" },
-      { type: "image" as const, src: "/previews/quikard-2.png" },
-      { type: "image" as const, src: "/previews/quikard-3.png" },
+      { type: "image", src: "/previews/quikard-1.png" },
+      { type: "image", src: "/previews/quikard-2.png" },
+      { type: "image", src: "/previews/quikard-3.png" },
     ],
-    technical: {
-      heading: "Full-Stack Implementation",
+    tier: 2,
+    engineering: {
+      label: "Engineering",
       points: [
-        "Next.js 15 + TypeScript frontend with Tailwind styling. FastAPI + SQLAlchemy backend with PostgreSQL/SQLite database.",
+        "Next.js 15 + TypeScript frontend with Tailwind styling, FastAPI + SQLAlchemy backend on PostgreSQL/SQLite.",
         "Apple Wallet Pass API integration: generates .pkpass files for NFC-enabled business card sharing directly from iPhone Wallet.",
-        "QR code generation and encoding: each card gets a unique shareable URL and auto-generated QR code for physical-world distribution.",
-      ],
-    },
-    business: {
-      heading: "Product & Market",
-      points: [
-        "Addresses a real friction point: paper business cards are wasteful and forgettable. Digital alternatives exist but most lack Apple Wallet integration.",
-        "Apple Wallet pass means the card lives alongside boarding passes and tickets — high visibility, zero app install required for recipients.",
-        "B2B angle: companies can issue branded digital cards to employees with consistent formatting and contact info.",
+        "QR code generation: each card gets a unique shareable URL and auto-generated QR code for physical-world distribution.",
       ],
     },
   },
@@ -181,22 +246,14 @@ const projects: Project[] = [
     role: "Lead Developer (85 of 153 commits)",
     stack: ["Next.js 14", "Supabase", "GPT-4", "TypeScript", "Tailwind"],
     github: "https://github.com/neontap/spartahack",
-    media: [{ type: "video" as const, src: "/previews/coursechecker.mp4" }],
-    technical: {
-      heading: "System Design",
+    media: [{ type: "video", src: "/previews/coursechecker.mp4" }],
+    tier: 2,
+    engineering: {
+      label: "Engineering",
       points: [
         "Multi-dimensional review system: 5 rating axes (overall, difficulty, materials, workload, grading fairness) with professor and semester tracking.",
-        "Pagination and incremental fetching across courses and reviews — prevents loading full datasets on mount and keeps the UI responsive as data grows.",
-        "Supabase backend with PostgreSQL and Row-Level Security. Handles data isolation, university email domain validation, and Google OAuth without a custom auth layer.",
-      ],
-    },
-    business: {
-      heading: "From Hackathon to Product",
-      points: [
-        "Solves a real problem: students choose courses with incomplete information. RateMyProfessor covers professors, but not the course content itself.",
-        "University email gating ensures review quality — only verified students from the relevant institution can contribute.",
-        "After SpartaHack, brought in 2 additional developers to keep building for 3 months. Submitted to project judging at MSU's second-largest CS club and placed 3rd.",
-        "2,000 unique visitors in the first week after launch.",
+        "Pagination and incremental fetching across courses and reviews — keeps the UI responsive as data grows instead of loading full datasets on mount.",
+        "Supabase + PostgreSQL with Row-Level Security — handles data isolation, university email domain validation, and Google OAuth without a custom auth layer.",
       ],
     },
   },
@@ -207,33 +264,50 @@ const projects: Project[] = [
     role: "Team of 4 — SpartaHack XI | Blockchain Track 3rd Place",
     stack: ["Next.js 15", "Django REST", "Gemini AI", "Solidity", "Zustand"],
     github: "https://github.com/stdmitry04/Volunteer_Matchmaker",
-    media: [] as { type: "image" | "video"; src: string }[],
-    technical: {
-      heading: "24-Hour Architecture",
+    media: [],
+    tier: 2,
+    engineering: {
+      label: "Engineering",
       points: [
         "Swipe-based matching engine with composite scoring: proximity (geodistance), skills overlap, job urgency (time-decay weighting), and volunteer reliability rating.",
-        "Real-time chat between matched volunteer and requester — no personal contact info exchanged. JWT-authenticated WebSocket-style messaging.",
-        "Google Gemini API for AI-enhanced job descriptions and auto-generated listing images.",
-        "Ethereum smart contract (VolunteerLeaderboard.sol) for transparent donation tracking. Ethers.js frontend integration with on-chain monthly rounds.",
-      ],
-    },
-    business: {
-      heading: "Social Impact & Design",
-      points: [
-        "Addresses a coordination problem: elderly, disabled, and busy parents need help with everyday tasks, but finding reliable volunteers is friction-heavy.",
-        "Swipe UX (familiar from dating apps) lowers the barrier to engagement — volunteers browse opportunities casually rather than committing upfront.",
-        "Badge achievement system drives retention: Specialist, Firefighter, Anchor, Inclusionist tracks reward consistent, diverse volunteering.",
-        "Blockchain donation leaderboard adds transparency for organizational donors — funds tracked on-chain, monthly rounds incentivize sustained giving.",
+        "Real-time chat between matched volunteer and requester with no personal contact info exchanged — JWT-authenticated messaging.",
+        "Ethereum smart contract (VolunteerLeaderboard.sol) for transparent on-chain donation tracking, integrated on the frontend via Ethers.js.",
       ],
     },
   },
 ];
 
 const skills = {
-  "AI / ML": ["RAG Systems", "Vector DBs", "Embeddings", "Agentic Systems", "Frontier LLM APIs"],
-  Backend: ["Python", "Django REST", "FastAPI", "Node.js", "PostgreSQL", "Redis"],
-  Frontend: ["TypeScript", "React", "Next.js", "Tailwind CSS", "Zustand"],
-  Infrastructure: ["AWS (ECS, S3, RDS)", "Docker", "Terraform", "GitHub Actions", "CI/CD"],
+  "AI / ML": [
+    "RAG Systems",
+    "Vector Search (Qdrant)",
+    "LLM Integration (GPT-4, OpenAI API)",
+    "Embeddings",
+    "Cross-encoder Reranking",
+    "Agentic Systems (Tool Calling, Memory)",
+    "Eval Design",
+  ],
+  Backend: [
+    "Python",
+    "Django REST",
+    "FastAPI",
+    "Celery",
+    "Node.js",
+    "REST APIs",
+    "Async Processing",
+    "RBAC",
+    "Stripe",
+  ],
+  Frontend: ["TypeScript", "React", "Next.js", "HTML/CSS", "Tailwind CSS", "Zustand"],
+  Infrastructure: [
+    "AWS (ECS, RDS, S3)",
+    "Terraform",
+    "Docker",
+    "CI/CD (GitHub Actions)",
+    "CloudWatch",
+    "Autoscaling",
+  ],
+  Databases: ["PostgreSQL", "Redis", "MongoDB", "Qdrant", "SQLite"],
 };
 
 /* ─────────────────────────── ANIMATIONS ─────────────────────────── */
@@ -462,14 +536,62 @@ function MediaStrip({
   );
 }
 
-function ProjectCard({
-  project,
-  index,
-}: {
-  project: Project;
-  index: number;
-}) {
-  const [tab, setTab] = useState<"technical" | "business">("technical");
+/* GitHub "Source" + optional "Live" links — shared by both card tiers */
+function ProjectLinks({ github, link }: { github: string; link?: string }) {
+  return (
+    <div className="flex gap-4">
+      <a
+        href={github}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-mono text-label text-accent-blue hover:text-text transition-colors duration-200 flex items-center gap-1.5"
+      >
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+        </svg>
+        Source
+      </a>
+      {link && (
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-label text-sage hover:text-text transition-colors duration-200 flex items-center gap-1.5"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+            />
+          </svg>
+          Live
+        </a>
+      )}
+    </div>
+  );
+}
+
+function StackPills({ stack }: { stack: string[] }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {stack.map((tech) => (
+        <span
+          key={tech}
+          className="px-3 py-1 text-label font-mono rounded-full border border-border text-text-muted
+                     group-hover:border-accent-blue/30 transition-colors duration-300"
+        >
+          {tech}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Tier 1: full production case study with Engineering / Impact tabs ─── */
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const [tab, setTab] = useState<"engineering" | "impact">("engineering");
+  const hasImpact = !!project.impact;
 
   return (
     <motion.article
@@ -486,16 +608,13 @@ function ProjectCard({
           <h3 className="font-display text-3xl md:text-4xl font-light tracking-tight text-text">
             {project.title}
           </h3>
-          {/* L1 */}
           <span className="font-mono text-label text-text-muted whitespace-nowrap mt-2">
             {project.year}
           </span>
         </div>
-        {/* L3 */}
         <p className="font-body text-body-lg text-text-muted leading-relaxed max-w-2xl">
           {project.hook}
         </p>
-        {/* L1 */}
         <p className="font-mono text-label text-sage mt-3">{project.role}</p>
       </div>
 
@@ -505,115 +624,164 @@ function ProjectCard({
       )}
 
       {/* Stack pills */}
-      <div className="px-8 py-4 border-b border-border flex flex-wrap gap-2">
-        {project.stack.map((tech) => (
-          <span
-            key={tech}
-            className="px-3 py-1 text-label font-mono rounded-full border border-border text-text-muted
-                       group-hover:border-accent-blue/30 transition-colors duration-300"
-          >
-            {tech}
-          </span>
-        ))}
+      <div className="px-8 py-4 border-b border-border">
+        <StackPills stack={project.stack} />
       </div>
 
       {/* Tabs */}
       <div className="px-8 pt-5 flex gap-1">
         <button
-          onClick={() => setTab("technical")}
+          onClick={() => setTab("engineering")}
           className={`px-4 py-2 text-body font-body font-medium rounded-t-sm transition-all duration-200 ${
-            tab === "technical"
+            tab === "engineering"
               ? "bg-bg text-accent-blue border border-border border-b-transparent"
               : "text-text-muted hover:text-text"
           }`}
         >
-          Technical
+          {project.engineering.label}
         </button>
-        <button
-          onClick={() => setTab("business")}
-          className={`px-4 py-2 text-body font-body font-medium rounded-t-sm transition-all duration-200 ${
-            tab === "business"
-              ? "bg-bg text-rose border border-border border-b-transparent"
-              : "text-text-muted hover:text-text"
-          }`}
-        >
-          Product &amp; Business
-        </button>
+        {hasImpact && (
+          <button
+            onClick={() => setTab("impact")}
+            className={`px-4 py-2 text-body font-body font-medium rounded-t-sm transition-all duration-200 ${
+              tab === "impact"
+                ? "bg-bg text-rose border border-border border-b-transparent"
+                : "text-text-muted hover:text-text"
+            }`}
+          >
+            {project.impact!.label}
+          </button>
+        )}
       </div>
 
       {/* Tab content */}
       <div className="px-8 pb-8 pt-0">
         <div className="bg-bg border border-border rounded-b-sm rounded-tr-sm p-6">
-          {/* L4 */}
-          <h4
-            className={`font-display text-sub-heading font-medium mb-5 ${
-              tab === "technical" ? "text-accent-blue" : "text-rose"
-            }`}
-          >
-            {tab === "technical"
-              ? project.technical.heading
-              : project.business.heading}
-          </h4>
-          <ul className="space-y-3">
-            {(tab === "technical"
-              ? project.technical.points
-              : project.business.points
-            ).map((point, i) => (
-              <motion.li
-                key={`${tab}-${i}`}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.3 }}
-                className="flex gap-3 text-body leading-relaxed text-text-muted"
-              >
-                <span
-                  className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
-                    tab === "technical" ? "bg-accent-blue" : "bg-rose"
-                  }`}
-                />
-                {point}
-              </motion.li>
-            ))}
-          </ul>
+          {tab === "engineering" ? (
+            <div className="space-y-7">
+              {(project.engineering.sections ?? [
+                { header: "", points: project.engineering.points ?? [] },
+              ]).map((section, si) => (
+                <div key={section.header || si}>
+                  {section.header && (
+                    <h4 className="font-mono text-label uppercase tracking-[0.15em] text-accent-blue mb-4">
+                      {section.header}
+                    </h4>
+                  )}
+                  <ul className="space-y-3">
+                    {section.points.map((point, i) => (
+                      <motion.li
+                        key={`eng-${si}-${i}`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04, duration: 0.3 }}
+                        className="flex gap-3 text-body leading-relaxed text-text-muted"
+                      >
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 bg-accent-blue" />
+                        {point}
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {project.impact!.points.map((point, i) => (
+                <motion.li
+                  key={`impact-${i}`}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                  className="flex gap-3 text-body leading-relaxed text-text-muted"
+                >
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 bg-rose" />
+                  {point}
+                </motion.li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
       {/* Links */}
-      <div className="px-8 pb-6 flex gap-4">
-        <a
-          href={project.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-mono text-label text-accent-blue hover:text-text transition-colors duration-200 flex items-center gap-1.5"
-        >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-          </svg>
-          Source
-        </a>
-        {project.link && (
-          <a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-label text-sage hover:text-text transition-colors duration-200 flex items-center gap-1.5"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-              />
-            </svg>
-            Live
-          </a>
-        )}
+      <div className="px-8 pb-6">
+        <ProjectLinks github={project.github} link={project.link} />
+      </div>
+    </motion.article>
+  );
+}
+
+/* ─── Tier 2: compact card — single Engineering view, no tab toggle ─── */
+function CompactProjectCard({ project, index }: { project: Project; index: number }) {
+  const sections = project.engineering.sections ?? [
+    { header: "", points: project.engineering.points ?? [] },
+  ];
+
+  return (
+    <motion.article
+      custom={index}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-60px" }}
+      className="group relative border border-border rounded-sm overflow-hidden bg-surface p-6 flex flex-col"
+    >
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <h3 className="font-display text-2xl font-light tracking-tight text-text">
+          {project.title}
+        </h3>
+        <span className="font-mono text-label text-text-muted whitespace-nowrap mt-1">
+          {project.year}
+        </span>
+      </div>
+      <p className="font-body text-body text-text-muted leading-relaxed mb-3">
+        {project.hook}
+      </p>
+      <p className="font-mono text-label text-sage mb-4">{project.role}</p>
+
+      {/* Media strip (if any) */}
+      {project.media.length > 0 && (
+        <div className="-mx-6 mb-4 border-y border-border">
+          <MediaStrip media={project.media} title={project.title} />
+        </div>
+      )}
+
+      {/* Engineering bullets */}
+      <div className="space-y-5 mb-5">
+        {sections.map((section, si) => (
+          <div key={section.header || si}>
+            {section.header && (
+              <h4 className="font-mono text-label uppercase tracking-[0.15em] text-accent-blue mb-3">
+                {section.header}
+              </h4>
+            )}
+            <ul className="space-y-2.5">
+              {section.points.map((point, i) => (
+                <li
+                  key={`c-${si}-${i}`}
+                  className="flex gap-3 text-body leading-relaxed text-text-muted"
+                >
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 bg-accent-blue" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {project.note && (
+        <p className="font-body text-label text-text-muted/70 italic mb-5">
+          {project.note}
+        </p>
+      )}
+
+      {/* Footer: stack + links */}
+      <div className="mt-auto space-y-4">
+        <StackPills stack={project.stack} />
+        <ProjectLinks github={project.github} link={project.link} />
       </div>
     </motion.article>
   );
@@ -783,7 +951,7 @@ export default function Home() {
               custom={0}
               className="font-mono text-label text-accent-blue tracking-[0.25em] uppercase mb-5"
             >
-              Software Engineer
+              Backend &amp; AI Engineer
             </motion.p>
 
             {/* L2: Name — dominant anchor. Largest element on page. */}
@@ -803,9 +971,8 @@ export default function Home() {
               custom={2}
               className="text-lg md:text-xl text-text-muted leading-relaxed max-w-lg mb-10"
             >
-              Building B2B software end-to-end — architecture,
-              deployment, and the client work that gets it into production.
-              Michigan State &apos;26.
+              Building production RAG pipelines, agentic systems, and
+              multi-tenant B2B infrastructure. Michigan State CS &apos;26.
             </motion.p>
 
             {/* L4: Highlights — supporting proof. Step down from tagline. */}
@@ -815,10 +982,8 @@ export default function Home() {
               className="grid grid-cols-2 gap-x-8 gap-y-5 mb-10 max-w-lg"
             >
               {[
-                { stat: "ERP in production", detail: "7th largest school district in Illinois" },
-                { stat: "AI platform in production", detail: "deployed to 5 universities across US & India" },
-                { stat: "Scaled org 55%", detail: "450 to 700 members in 4 months" },
-                { stat: "SpartaHack XI", detail: "Blockchain Track 3rd Place" },
+                { stat: "ERP in production", detail: "7th largest K-12 district in Illinois" },
+                { stat: "AI platform in production", detail: "5 university partners, US & India" },
               ].map((h, i) => (
                 <motion.div
                   key={i}
@@ -910,13 +1075,16 @@ export default function Home() {
               About
             </p>
             <p className="font-display text-2xl md:text-3xl font-light leading-relaxed text-text">
-              As a Software Developer at{" "}
-              <span className="text-accent-blue">APS Data Technologies</span>,
-              I work across the full stack and stay embedded in client and
-              stakeholder conversations — scoping requirements, aligning on
-              technical direction, and owning the infrastructure that keeps
-              things running in production. My goal is shipping
-              products that holds up and move the right needle.
+              Backend and AI engineer specializing in production RAG pipelines,
+              tool-calling agents, and multi-tenant B2B infrastructure. At{" "}
+              <span className="text-accent-blue">APS Data Technologies</span>{" "}
+              I&apos;ve shipped systems serving the 7th largest Illinois K-12
+              district and 5 university partners — owning architecture,
+              deployment, and the AI features end-to-end.
+            </p>
+            <p className="font-body text-body-lg text-text-muted leading-relaxed mt-6">
+              I care about building things that hold up in production, not just
+              in demos.
             </p>
           </motion.div>
         </div>
@@ -961,17 +1129,18 @@ export default function Home() {
                 April 2025 — Present
               </p>
               <h3 className="font-display text-sub-heading font-light text-text mb-1">
-                Software Developer
+                Software Engineer
               </h3>
               <p className="font-mono text-body text-sage mb-3">
                 APS Data Technologies — EdTech B2B
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                Building production AI-powered ERP system (hiring and timesheet tracking modules)
-                for K-12 school districts. Full-stack work
-                across Django REST, Next.js, PostgreSQL, and AWS. Led
-                development of a RAG-powered college application platform with
-                OCR document pipelines and vector search.
+                Building production RAG pipelines, tool-calling AI agents with
+                per-user memory, and multi-tenant infrastructure serving the 7th
+                largest Illinois K-12 district and 5 university partners. Owns
+                architecture end-to-end — async processing, vector search, AWS
+                deployment, and a capability-based RBAC system districts use to
+                manage their own roles and permissions at runtime.
               </p>
             </motion.div>
 
@@ -994,9 +1163,11 @@ export default function Home() {
                 Safety Straw — Seed-stage Safety Tech Startup
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                Delivered e-commerce platform with 4-person team 25% ahead of
-                timeline. Built frontend and CI/CD pipeline reducing deployment
-                from hours to minutes. Architected RESTful API and role-based access control.
+                Built an AI support agent with custom tools and sub-agents that
+                resolved 80%+ of customer inquiries autonomously. Shipped the
+                REST API backend with Stripe integration and async order
+                workflows, plus the React storefront end-to-end as the sole
+                engineer.
               </p>
             </motion.div>
 
@@ -1074,10 +1245,36 @@ export default function Home() {
             </h2>
           </motion.div>
 
+          {/* Tier 1 — Production Work */}
+          <div className="mb-8">
+            <p className="font-mono text-label text-accent-blue tracking-[0.2em] uppercase">
+              Production Work
+            </p>
+          </div>
           <div className="grid gap-8">
-            {projects.map((project, i) => (
-              <ProjectCard key={project.title} project={project} index={i} />
-            ))}
+            {projects
+              .filter((p) => p.tier === 1)
+              .map((project, i) => (
+                <ProjectCard key={project.title} project={project} index={i} />
+              ))}
+          </div>
+
+          {/* Tier 2 — Other Projects */}
+          <div className="mt-20 mb-8">
+            <p className="font-mono text-label text-text-muted tracking-[0.2em] uppercase">
+              Other Projects
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {projects
+              .filter((p) => p.tier === 2)
+              .map((project, i) => (
+                <CompactProjectCard
+                  key={project.title}
+                  project={project}
+                  index={i}
+                />
+              ))}
           </div>
         </div>
       </section>
@@ -1106,7 +1303,7 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
             {Object.entries(skills).map(([category, items], catIdx) => (
               <motion.div
                 key={category}
