@@ -94,8 +94,8 @@ export default async function Image() {
               marginBottom: 40,
             }}
           >
-            Building production RAG pipelines, agentic systems, and
-            multi-tenant B2B infrastructure. Michigan State CS &apos;26.
+            Production RAG pipelines, tool-calling agents with memory, and
+            multi-tenant systems.
           </div>
 
           <div style={{ display: "flex", gap: 24 }}>

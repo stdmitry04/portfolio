@@ -37,7 +37,7 @@ type Project = {
   year: string;
   role: string;
   stack: string[];
-  github: string;
+  github?: string;
   media: Media[];
   link?: string;
   tier: 1 | 2;
@@ -49,8 +49,8 @@ type Project = {
 const projects: Project[] = [
   /* ───────────── TIER 1 — PRODUCTION WORK ───────────── */
   {
-    title: "K-12 ERP Platform",
-    hook: "Enterprise ERP platform for K-12 school districts — hiring pipeline, timesheet tracking, and onboarding in one system. Secured a pilot with the 7th largest school district in Illinois, serving 1,650+ daily active users.",
+    title: "ERP Platform for K12 Schools",
+    hook: "ERP for K12 school districts with async document and AI processing pipelines, tool-calling agents with memory, and resource-based RBAC (module.submodule.action). Powers hiring, timesheet, and onboarding workflows for 1,650+ daily active users at the 7th largest Illinois school district.",
     year: "2025 — Present",
     role: "Software Engineer @ APS Data Technologies",
     stack: ["Django REST", "Celery", "Next.js 15", "PostgreSQL", "AWS", "Terraform"],
@@ -63,7 +63,7 @@ const projects: Project[] = [
         {
           header: "Hiring Pipeline",
           points: [
-            "Async candidate screening pipeline (Django + Celery + Redis) with idempotent retry logic and dead-letter queue — cut processing time 10x (2 hrs → 12 min), directly unblocking expansion to additional school districts.",
+            "Built an async candidate screening pipeline (Django + Celery + Redis) with idempotent retry logic and a dead-letter queue. Cut processing time 10x from 2 hours to 12 minutes, directly unblocking expansion to additional school districts.",
             "REST API exposed end-to-end to a Next.js 15 + React 19 frontend with Zustand-managed candidate state, iterated through live demos with district stakeholders.",
             "DocuSign integration for electronic offer signatures, SSO for district-wide authentication, automated email workflows for candidate communication.",
           ],
@@ -71,19 +71,26 @@ const projects: Project[] = [
         {
           header: "Permissions & Access Control",
           points: [
-            "Capability-based, deny-by-default RBAC — permission keys use a module.submodule + view/edit model (similar to Kubernetes resource access). A role can act only on explicitly granted capabilities; absence of a grant means denied, with no separate deny rules to maintain.",
-            "Central permission registry materializes into the database on deploy and acts as the single source of truth — role grants set-sync against it on every update, purging any stale access left over from prior configurations.",
-            "Enforced identically on backend (DRF permission classes) and frontend (route and component gating mirroring the same deny-by-default model) — live permission invalidation propagates to active sessions within 60 seconds, no re-login required.",
-            "Districts self-serve role creation and permission configuration at runtime — no code changes or redeploys required for a new role or access change.",
+            "Capability-based, deny-by-default RBAC where permission keys follow a module.submodule + view/edit model (similar to Kubernetes resource access). A role can only act on explicitly granted capabilities; a missing grant means denied with no separate deny rules to maintain.",
+            "Central permission registry materializes into the database on deploy and acts as the single source of truth. Role grants sync against it on every update, purging any stale access from prior configurations.",
+            "Enforced identically on the backend (DRF permission classes) and frontend (route and component gating). Live permission changes propagate to active sessions within 60 seconds with no re-login required.",
+            "Districts create roles and configure permissions at runtime with no code changes or redeploys needed.",
+          ],
+        },
+        {
+          header: "AI Assistant",
+          points: [
+            "Tool-calling agent built into the ERP that pulls from background-check and payroll APIs on demand, aggregating data that previously meant opening multiple vendor portals. Cut time on routine ERP tasks 5x.",
+            "Per-user memory persists each person's recurring queries across sessions so the assistant already knows what someone usually asks about without them having to repeat context every time.",
           ],
         },
         {
           header: "Infrastructure",
           points: [
-            "Multi-tenant architecture with per-district data isolation enforced at the query layer — every request scoped to caller's tenant and role.",
-            "AWS infrastructure (ECS, RDS, S3, Terraform) supporting 1,650+ DAU and 500 AI-processed resumes/day — autoscaling thresholds and connection pool limits sized to actual load.",
+            "Multi-tenant architecture with per-district data isolation enforced at the query layer. Every request is scoped to the caller's tenant and role.",
+            "AWS infrastructure (ECS, RDS, S3, Terraform) supporting 1,650+ DAU and 500 AI-processed resumes per day. Autoscaling thresholds and connection pool limits sized to actual load.",
             "CloudWatch alerting on P99 latency, container logs, and error rates across dev/staging/prod.",
-            "Fully integrated with each district's existing payroll and HR systems — new hire data syncs automatically so districts don't replace infrastructure they already run.",
+            "Fully integrated with each district's existing payroll and HR systems so new hire data syncs automatically without replacing infrastructure they already run.",
           ],
         },
       ],
@@ -91,16 +98,16 @@ const projects: Project[] = [
     impact: {
       label: "Impact",
       points: [
-        "Hiring pipeline cut candidate screening time 10x — district HR teams moved from 2-hour manual review cycles to 12-minute automated screening, directly unblocking expansion to additional school districts.",
-        "Districts manage their own roles and permissions without filing tickets — a permission change that previously required a developer and a deploy now takes minutes in the admin UI.",
-        "1,650+ daily active users across HR, hiring, and timesheet workflows at the 7th largest K-12 district in Illinois.",
-        "New hire data syncs automatically into existing district payroll and HR systems — zero disruption to current infrastructure.",
+        "Hiring pipeline cut candidate screening from 2 hours to 12 minutes. HR teams went from manual review marathons to same-day decisions.",
+        "Districts manage their own roles and permissions without filing tickets. A change that previously required a developer and a deploy now takes minutes in the admin UI.",
+        "Replaced on-paper timesheet workflows and integrated with the district's existing payroll and staff provisioning systems via nightly exports and API calls, giving 1,650+ daily users a single platform at the 7th largest K-12 district in Illinois.",
+        "Integrated with each district's existing payroll and HR systems so no district had to rip out infrastructure they already ran.",
       ],
     },
   },
   {
-    title: "Campus USA",
-    hook: "College application platform with a RAG-powered AI assistant, OCR document pipelines, and async processing infrastructure. Serving 200+ daily student queries across 5 university partners in the US and India.",
+    title: "Admissions & Career Platform for University Partners",
+    hook: "AI-powered student support platform embedded with 5 university partners across the US and India. Universities onboard their students directly to get help with internship searches, placement tests, and college applications. RAG pipeline with cross-encoder reranking and per-user memory handles 200+ daily queries at 95%+ retrieval accuracy.",
     year: "2024 — 2025",
     role: "Software Engineer @ APS Data Technologies",
     stack: ["Django REST", "Qdrant", "OpenAI", "LangGraph", "AWS S3/ECS/RDS", "Docker"],
@@ -113,8 +120,8 @@ const projects: Project[] = [
         {
           header: "RAG Pipeline",
           points: [
-            "Production RAG pipeline: OpenAI embeddings stored in Qdrant vector database, cross-encoder reranker re-scoring top-k candidates before context is passed to the LLM — closes the gap on queries where semantic similarity alone surfaces the wrong document.",
-            "Per-user memory layer (Postgres-backed, LangGraph orchestration) scoping stored context to document metadata and session summaries — avoids context window bloat across multi-session use.",
+            "Production RAG pipeline with OpenAI embeddings stored in Qdrant and a cross-encoder reranker re-scoring top-k candidates before context is passed to the LLM. Closes the gap on queries where semantic similarity alone surfaces the wrong document.",
+            "Per-user memory layer (Postgres-backed, LangGraph orchestration) scoping stored context to document metadata and session summaries to avoid context window bloat across multi-session use.",
             "Serving 200+ daily student queries across 5 university partners.",
           ],
         },
@@ -122,7 +129,7 @@ const projects: Project[] = [
           header: "Evaluation & Tuning",
           points: [
             "Built a manual evaluation harness of 100+ query/document pairs against a 1k+ document corpus to measure retrieval quality before shipping any change to the pipeline.",
-            "Tuned chunk size, overlap, and similarity threshold iteratively against the same fixed eval set — each variable changed in isolation to measure its isolated effect on retrieval accuracy.",
+            "Tuned chunk size, overlap, and similarity threshold iteratively against the same fixed eval set. Each variable changed in isolation to measure its effect on retrieval accuracy.",
             "Reached 95%+ retrieval accuracy across all university partners. Retrieval misses surface a structured \"not found\" response rather than a confident wrong answer.",
           ],
         },
@@ -130,7 +137,7 @@ const projects: Project[] = [
           header: "Infrastructure",
           points: [
             "AWS: ECS for container orchestration, RDS for managed PostgreSQL, S3 with pre-signed URLs for secure document storage.",
-            "Async document processing pipeline for OCR transcript and resume parsing — extracts structured data from uploaded files for downstream application processing.",
+            "Async document processing pipeline for OCR parsing of application documents (10+ per student) and resumes, extracting structured data from uploaded files for downstream processing.",
             "Django REST + Next.js 15 full-stack. Docker Compose for local development parity with production.",
             "Three-environment setup (dev/staging/prod) with CI/CD pipeline for automated deployments and rollback.",
           ],
@@ -140,19 +147,21 @@ const projects: Project[] = [
     impact: {
       label: "Impact",
       points: [
-        "AI assistant handles 200+ student queries daily across 5 university partners — students get contextual answers about programs, requirements, and deadlines without waiting for an advisor response.",
-        "OCR pipeline automated document parsing that was previously done manually per applicant.",
-        "Some enterprise integrations are omitted from the demo for confidentiality; the architecture reflected here represents the core production system.",
+        "5 university partners onboard their students directly into the platform to help them find internships, prepare for placement tests, and navigate US college applications.",
+        "200+ daily student queries handled at 95%+ retrieval accuracy. Students get specific, sourced answers without waiting on advisor availability across time zones.",
+        "OCR pipeline replaced manual per-applicant document review. Each student's application documents and resume are parsed automatically on upload, chunked using a semantic strategy that checks similarity between adjacent sentences, and embedded into the vector store.",
+        "Relevant information extracted from parsed documents feeds into the AI advisor as personalized context, re-ranked before being passed to the LLM so the advisor answers questions specific to that student's own application materials.",
+        "Some integrations omitted from the demo for confidentiality; the architecture here represents the core production system.",
       ],
     },
   },
   {
     title: "Safety Straw",
-    hook: "E-commerce platform for a drug-detection safety startup — AI support agent, REST API backend, Stripe integration, and React storefront delivered end-to-end as sole engineer.",
-    year: "2024",
+    hook: "AI support agent with custom tools and sub-agents that resolved 80%+ of customer inquiries autonomously. Owned architecture end-to-end for async order processing, REST API with Stripe integration, and React storefront.",
+    year: "2024 — 2025",
     role: "Software Engineer @ Safety Straw (Seed-stage Startup)",
     stack: ["Node.js", "Express", "MongoDB", "Stripe", "React", "CI/CD"],
-    github: "https://github.com/stdmitry04",
+    github: undefined,
     media: [],
     tier: 1,
     engineering: {
@@ -161,21 +170,21 @@ const projects: Project[] = [
         {
           header: "AI Support Agent",
           points: [
-            "Tool-calling AI agent with custom tools and sub-agents that looked up product, order, and shipment data through internal and third-party APIs — resolved 80%+ of customer inquiries autonomously, removing the need for manual ticket triage.",
+            "Tool-calling AI agent with custom tools and sub-agents that looked up product, order, and shipment data through internal and third-party APIs. Resolved 80%+ of customer inquiries autonomously, removing the need for manual ticket triage.",
           ],
         },
         {
           header: "Backend & Payments",
           points: [
             "REST API (Node.js + Express + MongoDB) with JWT authentication powering checkout and order management end-to-end.",
-            "Stripe integration for payment processing — checkout sessions, webhook handling for order confirmation, async queues for post-purchase notification workflows.",
+            "Stripe integration for payment processing: checkout sessions, webhook handling for order confirmation, async queues for post-purchase notification workflows.",
             "Single codebase serving four product surfaces: B2C storefront, B2B bulk order flow, editorial blog, and transactional notification service.",
           ],
         },
         {
           header: "Frontend & Delivery",
           points: [
-            "React storefront built pixel-perfect to Figma designs — HTML/CSS implementation with no designer handoff ambiguity.",
+            "React storefront built pixel-perfect to Figma designs with clean HTML/CSS and no designer handoff ambiguity.",
             "CI/CD pipeline (GitHub Actions, Docker) running tests and lint checks on every PR, automating deploys and cutting release cycle from hours to minutes.",
           ],
         },
@@ -184,8 +193,8 @@ const projects: Project[] = [
     impact: {
       label: "Impact",
       points: [
-        "AI agent resolved 80%+ of customer inquiries autonomously — support load that previously required manual responses was handled without human intervention.",
-        "Delivered the full platform end-to-end as sole engineer, 25% ahead of the original timeline.",
+        "AI agent resolved 80%+ of customer inquiries autonomously, removing the need for manual ticket triage entirely for the majority of support volume.",
+        "Shipped 25% ahead of schedule. The AI support agent handled 80%+ of inquiries autonomously while event-driven async queues processed orders and triggered post-purchase notifications end-to-end without manual intervention.",
       ],
     },
   },
@@ -193,7 +202,7 @@ const projects: Project[] = [
   /* ───────────── TIER 2 — OTHER PROJECTS ───────────── */
   {
     title: "Multi-Agent Simulation Engine",
-    hook: "Stride scheduler and tiered execution system for a real-time civilization simulation.",
+    hook: "Real-time civilization simulation I scaled to 50,000+ concurrent agents using a 4-tier scheduler (critical/gameplay/environment/misc) with async job queues, separating deterministic combat from construction tasks to prevent frame stalls.",
     year: "2026",
     role: "Product Lead — Team of 30 (18 commits)",
     stack: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Unit Testing"],
@@ -206,20 +215,20 @@ const projects: Project[] = [
         {
           header: "Scheduling Architecture",
           points: [
-            "Stride scheduling algorithm: processes have a virtual time position (pass) and stride inversely proportional to priority. Scheduler always picks the process furthest behind in virtual time — guaranteeing fair, proportional CPU allocation.",
-            "Tiered execution system with 4 importance levels: CRITICAL (40% frame budget), GAMEPLAY (30%), ECONOMY (20%), COSMETIC (10%). Each tier backed by its own Scheduler instance via composition.",
-            "Soft budget enforcement for CRITICAL tier (up to 250ms overage allowed), hard budget cutoff for all other tiers. Prevents cosmetic processes from starving gameplay-critical ones.",
-            "C++23 compiled to WebAssembly via Emscripten. Designed interfaces between world state, agent behaviors, and rendering systems across distributed development teams.",
-            "Full test suite: unit tests for base Scheduler (add/remove/priority/peek) and TieredScheduler (budget enforcement, tier isolation, edge cases). Assert-to-throw conversion for robust error handling.",
+            "Implemented stride scheduling where processes track virtual time position, with stride inversely proportional to priority. The scheduler always advances the furthest-behind process, ensuring fair proportional CPU allocation across 50,000+ agents.",
+            "Organized execution into 4 tiers (CRITICAL 40%, GAMEPLAY 30%, ENVIRONMENT 20%, MISC 10%) with independent Scheduler instances per tier via composition.",
+            "Set per-tier budgets with soft enforcement for CRITICAL (250ms overage allowed) and hard cutoff for others, preventing lower-tier processes from starving critical gameplay loops.",
+            "Built in C++23 compiled to WebAssembly via Emscripten, designing clean interfaces between world state, agent behaviors, and rendering systems for a distributed 30-person team.",
+            "Verified correctness across unit tests (Scheduler add/remove/priority/peek), integration tests (budget enforcement, tier isolation, edge cases), and starvation scenarios.",
           ],
         },
       ],
     },
-    note: "Academic engineering project — architecture and correctness, not business metrics.",
+    note: "Academic engineering project focused on architecture and correctness, not business metrics.",
   },
   {
     title: "QuiKard",
-    hook: "Digital business card platform with QR code generation and Apple Wallet integration.",
+    hook: "Built a digital business card service: create in under a minute, export to Apple Wallet without signing up, share via NFC tap.",
     year: "2025",
     role: "Solo Developer",
     stack: ["Next.js 15", "FastAPI", "PostgreSQL", "Apple Wallet API", "TypeScript", "Docker"],
@@ -234,14 +243,14 @@ const projects: Project[] = [
       label: "Engineering",
       points: [
         "Next.js 15 + TypeScript frontend with Tailwind styling, FastAPI + SQLAlchemy backend on PostgreSQL/SQLite.",
-        "Apple Wallet Pass API integration: generates .pkpass files for NFC-enabled business card sharing directly from iPhone Wallet.",
-        "QR code generation: each card gets a unique shareable URL and auto-generated QR code for physical-world distribution.",
+        "Integrated Apple Wallet Pass API to generate .pkpass files on-the-fly, enabling NFC tap sharing directly from iPhone Wallet.",
+        "Each card gets a unique shareable URL and auto-generated QR code for distributing physical cards without typing or links.",
       ],
     },
   },
   {
     title: "CourseChecker",
-    hook: "University course review platform with AI-powered academic advisor. Built at SpartaHack X in 24 hours, shipped for real use.",
+    hook: "Course review aggregator where only verified university students (via school email) can submit reviews. Tracks 5 rating dimensions (overall, difficulty, materials, workload, fairness) per professor and semester.",
     year: "2025",
     role: "Lead Developer (85 of 153 commits)",
     stack: ["Next.js 14", "Supabase", "GPT-4", "TypeScript", "Tailwind"],
@@ -251,15 +260,15 @@ const projects: Project[] = [
     engineering: {
       label: "Engineering",
       points: [
-        "Multi-dimensional review system: 5 rating axes (overall, difficulty, materials, workload, grading fairness) with professor and semester tracking.",
-        "Pagination and incremental fetching across courses and reviews — keeps the UI responsive as data grows instead of loading full datasets on mount.",
-        "Supabase + PostgreSQL with Row-Level Security — handles data isolation, university email domain validation, and Google OAuth without a custom auth layer.",
+        "Tracks 5 independent rating axes (overall, difficulty, materials, workload, fairness) with granularity per professor and semester.",
+        "Implemented pagination and incremental data fetching so the UI stays responsive as review count grows, avoiding full dataset loads on mount.",
+        "Used Supabase RLS to enforce per-student data isolation, handle school email domain validation, and provide OAuth without custom auth infrastructure.",
       ],
     },
   },
   {
     title: "Volunteer Matchmaker",
-    hook: "\"Tinder for volunteering\" — connecting helpers with people who need them. Built in 24 hours at SpartaHack XI. Blockchain Track 3rd Place.",
+    hook: "Volunteer matching system using composite scoring across proximity, skills, urgency, and reliability. Integrated Ethereum smart contracts for on-chain donation tracking. Won SpartaHack XI Blockchain Track 3rd Place.",
     year: "2026",
     role: "Team of 4 — SpartaHack XI | Blockchain Track 3rd Place",
     stack: ["Next.js 15", "Django REST", "Gemini AI", "Solidity", "Zustand"],
@@ -269,9 +278,9 @@ const projects: Project[] = [
     engineering: {
       label: "Engineering",
       points: [
-        "Swipe-based matching engine with composite scoring: proximity (geodistance), skills overlap, job urgency (time-decay weighting), and volunteer reliability rating.",
-        "Real-time chat between matched volunteer and requester with no personal contact info exchanged — JWT-authenticated messaging.",
-        "Ethereum smart contract (VolunteerLeaderboard.sol) for transparent on-chain donation tracking, integrated on the frontend via Ethers.js.",
+        "Scoring algorithm weights proximity (geodistance), skill overlap, job urgency (time-decay for stale requests), and volunteer reliability rating to produce ranked matches.",
+        "Built real-time messaging between matched volunteer and requester without exposing personal contact info, using JWT-authenticated channels.",
+        "Deployed VolunteerLeaderboard smart contract on Ethereum for transparent donation tracking, integrated to frontend via Ethers.js.",
       ],
     },
   },
@@ -537,20 +546,22 @@ function MediaStrip({
 }
 
 /* GitHub "Source" + optional "Live" links — shared by both card tiers */
-function ProjectLinks({ github, link }: { github: string; link?: string }) {
+function ProjectLinks({ github, link }: { github?: string; link?: string }) {
   return (
     <div className="flex gap-4">
-      <a
-        href={github}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-mono text-label text-accent-blue hover:text-text transition-colors duration-200 flex items-center gap-1.5"
-      >
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-        </svg>
-        Source
-      </a>
+      {github && (
+        <a
+          href={github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-label text-accent-blue hover:text-text transition-colors duration-200 flex items-center gap-1.5"
+        >
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+          </svg>
+          Source
+        </a>
+      )}
       {link && (
         <a
           href={link}
@@ -971,8 +982,9 @@ export default function Home() {
               custom={2}
               className="text-lg md:text-xl text-text-muted leading-relaxed max-w-lg mb-10"
             >
-              Building production RAG pipelines, agentic systems, and
-              multi-tenant B2B infrastructure. Michigan State CS &apos;26.
+              Building production RAG pipelines, tool-calling agents with
+              memory, and multi-tenant backends with scalable AWS
+              infrastructure. Michigan State CS &apos;26.
             </motion.p>
 
             {/* L4: Highlights — supporting proof. Step down from tagline. */}
@@ -983,7 +995,7 @@ export default function Home() {
             >
               {[
                 { stat: "ERP in production", detail: "7th largest K-12 district in Illinois" },
-                { stat: "AI platform in production", detail: "5 university partners, US & India" },
+                { stat: "AI platform in production", detail: "5 university partners, US & Global" },
               ].map((h, i) => (
                 <motion.div
                   key={i}
@@ -1076,15 +1088,15 @@ export default function Home() {
             </p>
             <p className="font-display text-2xl md:text-3xl font-light leading-relaxed text-text">
               Backend and AI engineer specializing in production RAG pipelines,
-              tool-calling agents, and multi-tenant B2B infrastructure. At{" "}
+              tool-calling agents with memory, and multi-tenant backends with
+              scalable AWS infrastructure. At{" "}
               <span className="text-accent-blue">APS Data Technologies</span>{" "}
               I&apos;ve shipped systems serving the 7th largest Illinois K-12
-              district and 5 university partners — owning architecture,
+              district and 5 university partners — owning backend architecture,
               deployment, and the AI features end-to-end.
             </p>
             <p className="font-body text-body-lg text-text-muted leading-relaxed mt-6">
-              I care about building things that hold up in production, not just
-              in demos.
+              I build things that hold up in production, not just in demos.
             </p>
           </motion.div>
         </div>
@@ -1136,11 +1148,12 @@ export default function Home() {
               </p>
               <p className="text-body text-text-muted leading-relaxed">
                 Building production RAG pipelines, tool-calling AI agents with
-                per-user memory, and multi-tenant infrastructure serving the 7th
-                largest Illinois K-12 district and 5 university partners. Owns
-                architecture end-to-end — async processing, vector search, AWS
-                deployment, and a capability-based RBAC system districts use to
-                manage their own roles and permissions at runtime.
+                per-user memory, and multi-tenant backends with scalable AWS
+                infrastructure serving the 7th largest Illinois K-12 district and
+                5 university partners. Owned backend architecture end-to-end for
+                async processing, vector search, and a capability-based RBAC
+                system districts use to manage their own roles and permissions at
+                runtime.
               </p>
             </motion.div>
 
@@ -1154,7 +1167,7 @@ export default function Home() {
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
               <p className="font-mono text-label text-accent-blue mb-1.5">
-                September 2024 — December 2024
+                September 2024 — April 2025
               </p>
               <h3 className="font-display text-sub-heading font-light text-text mb-1">
                 Software Engineer
