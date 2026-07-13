@@ -222,7 +222,7 @@ const projects: Project[] = [
     year: "2026",
     role: "Product Lead — Team of 30 (18 commits)",
     stack: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Unit Testing"],
-    github: "https://github.com/stdmitry04/scheduler-demo",
+    github: "https://github.com/stdmitry04/scheduler",
     media: [
       { type: "video", src: "/previews/scheduler-demo.mp4" },
       { type: "image", src: "/previews/scheduler-1.jpg" },
