@@ -50,9 +50,9 @@ const projects: Project[] = [
   /* ───────────── TIER 1 — PRODUCTION WORK ───────────── */
   {
     title: "ERP Platform for K12 Schools",
-    hook: "ERP for K12 school districts with async document and AI processing pipelines, tool-calling agents with memory, and resource-based RBAC (module.submodule.action). Powers hiring, timesheet, and onboarding workflows for 1,650+ daily active users at the 7th largest Illinois school district.",
+    hook: "Multi-tenant ERP connecting HR, payroll, and staff provisioning for K-12 school districts. Replaces manual clock-in, paper-based hiring workflows, and IT-gated access changes. Serves 1,650+ daily active users at the 7th largest Illinois school district.",
     year: "2025 — Present",
-    role: "Software Engineer @ APS Data Technologies",
+    role: "Backend Engineer @ APS Data Technologies",
     stack: ["Django REST", "Celery", "Next.js 15", "PostgreSQL", "AWS", "Terraform"],
     github: "https://github.com/stdmitry04/aps-main-demo",
     media: [],
@@ -61,55 +61,57 @@ const projects: Project[] = [
       label: "Engineering",
       sections: [
         {
-          header: "Hiring Pipeline",
+          header: "Problem",
           points: [
-            "Built an async candidate screening pipeline (Django + Celery + Redis) with idempotent retry logic and a dead-letter queue. Cut processing time 10x from 2 hours to 12 minutes, directly unblocking expansion to additional school districts.",
-            "REST API exposed end-to-end to a Next.js 15 + React 19 frontend with Zustand-managed candidate state, iterated through live demos with district stakeholders.",
-            "DocuSign integration for electronic offer signatures, SSO for district-wide authentication, automated email workflows for candidate communication.",
+            "Districts were running HR, payroll, and staff provisioning across disconnected systems: background checks in one vendor portal, payroll setup in another, timesheets on paper. There was no single place to see a candidate or employee's full status.",
+            "Access control was binary: a role either had module access or it didn't. Districts with 50+ role types and constantly shifting responsibilities had no way to express that without developer intervention and a redeploy.",
+            "Candidate screening was fully manual. HR staff reviewed applications one by one, which took 2+ hours per batch and became a bottleneck every time a district tried to expand hiring.",
           ],
         },
         {
-          header: "Permissions & Access Control",
+          header: "What I Built",
           points: [
-            "Capability-based, deny-by-default RBAC where permission keys follow a module.submodule + view/edit model (similar to Kubernetes resource access). A role can only act on explicitly granted capabilities; a missing grant means denied with no separate deny rules to maintain.",
-            "Central permission registry materializes into the database on deploy and acts as the single source of truth. Role grants sync against it on every update, purging any stale access from prior configurations.",
-            "Enforced identically on the backend (DRF permission classes) and frontend (route and component gating). Live permission changes propagate to active sessions within 60 seconds with no re-login required.",
-            "Districts create roles and configure permissions at runtime with no code changes or redeploys needed.",
+            "Async hiring pipeline (Django + Celery + Redis) with idempotent retry logic and a dead-letter queue that cut candidate screening from 2 hours to 12 minutes.",
+            "Capability-based RBAC following module.submodule.action, deny-by-default. A central permission registry materializes into the database on deploy and is the single source of truth; stale grants are purged on every update.",
+            "Tool-calling AI agent connected to background-check and payroll APIs via tool calls, with per-user memory persisting each person's recurring queries across sessions.",
+            "REST API powering a Next.js 15 + React 19 frontend with Zustand-managed candidate state. DocuSign integration for offer signatures, SSO for district-wide auth.",
+            "Timesheet and onboarding modules integrated with each district's existing payroll system via nightly exports and API calls, so no district had to replace infrastructure they already ran.",
           ],
         },
         {
-          header: "AI Assistant",
+          header: "Architecture Decisions",
           points: [
-            "Tool-calling agent built into the ERP that pulls from background-check and payroll APIs on demand, aggregating data that previously meant opening multiple vendor portals. Cut time on routine ERP tasks 5x.",
-            "Per-user memory persists each person's recurring queries across sessions so the assistant already knows what someone usually asks about without them having to repeat context every time.",
+            "Celery workers for the hiring pipeline keep expensive screening operations off the API request path. Idempotent tasks with a dead-letter queue mean a Redis blip doesn't silently drop a candidate.",
+            "RBAC modeled as capabilities rather than roles-with-flags, similar to Kubernetes resource access. A missing grant means denied with no separate deny rules to maintain, which made the permission model auditable and meant districts could reason about it without reading code.",
+            "Permission enforcement mirrored identically on the backend (DRF permission classes) and frontend (route and component gating) so UI state and API access never diverge. Live changes propagate to active sessions within 60 seconds with no re-login.",
+            "AI agent uses tool calls to query live payroll and HR data rather than a knowledge base, because status questions need current records and not a cached snapshot from the last embedding run.",
           ],
         },
         {
           header: "Infrastructure",
           points: [
-            "Multi-tenant architecture with per-district data isolation enforced at the query layer. Every request is scoped to the caller's tenant and role.",
-            "AWS infrastructure (ECS, RDS, S3, Terraform) supporting 1,650+ DAU and 500 AI-processed resumes per day. Autoscaling thresholds and connection pool limits sized to actual load.",
-            "CloudWatch alerting on P99 latency, container logs, and error rates across dev/staging/prod.",
-            "Fully integrated with each district's existing payroll and HR systems so new hire data syncs automatically without replacing infrastructure they already run.",
+            "Multi-tenant architecture with per-district data isolation enforced at the query layer, so every request is scoped to the caller's tenant and role before any business logic runs.",
+            "AWS (ECS, RDS, S3, Terraform) supporting 1,650+ DAU and 500 AI-processed resumes per day. Autoscaling thresholds and connection pool limits sized to actual load profiles.",
+            "CloudWatch alerting on P99 latency, container logs, and error rates across dev/staging/prod environments.",
           ],
         },
-      ],
-    },
-    impact: {
-      label: "Impact",
-      points: [
-        "Hiring pipeline cut candidate screening from 2 hours to 12 minutes. HR teams went from manual review marathons to same-day decisions.",
-        "Districts manage their own roles and permissions without filing tickets. A change that previously required a developer and a deploy now takes minutes in the admin UI.",
-        "Replaced on-paper timesheet workflows and integrated with the district's existing payroll and staff provisioning systems via nightly exports and API calls, giving 1,650+ daily users a single platform at the 7th largest K-12 district in Illinois.",
-        "Integrated with each district's existing payroll and HR systems so no district had to rip out infrastructure they already ran.",
+        {
+          header: "Impact",
+          points: [
+            "Hiring pipeline cut candidate screening from 2 hours to 12 minutes, which moved HR teams from manual review marathons to same-day decisions.",
+            "Districts manage roles and permissions entirely through the admin UI. A change that previously required a developer and a deploy now takes minutes with no tickets filed.",
+            "AI agent reduced time on routine ERP tasks 5x by pulling from background-check and payroll portals through a single interface instead of three separate logins.",
+            "Replaced paper-based timesheets and manual onboarding steps; new hire data syncs to payroll automatically without replacing existing district infrastructure.",
+          ],
+        },
       ],
     },
   },
   {
     title: "Admissions & Career Platform for University Partners",
-    hook: "AI-powered student support platform embedded with 5 university partners across the US and India. Universities onboard their students directly to get help with internship searches, placement tests, and college applications. RAG pipeline with cross-encoder reranking and per-user memory handles 200+ daily queries at 95%+ retrieval accuracy.",
+    hook: "AI-powered student support platform embedded with 5 university partners across the US and India. Guides international students through US college applications, internship searches, hackathons, and financing. RAG pipeline with cross-encoder reranking and per-user memory handles 200+ daily queries at 95%+ retrieval accuracy.",
     year: "2024 — 2025",
-    role: "Software Engineer @ APS Data Technologies",
+    role: "Backend Engineer @ APS Data Technologies",
     stack: ["Django REST", "Qdrant", "OpenAI", "LangGraph", "AWS S3/ECS/RDS", "Docker"],
     github: "https://github.com/stdmitry04/campus-usa-demo",
     media: [],
@@ -118,46 +120,54 @@ const projects: Project[] = [
       label: "AI & Systems",
       sections: [
         {
-          header: "RAG Pipeline",
+          header: "Problem",
           points: [
-            "Production RAG pipeline with OpenAI embeddings stored in Qdrant and a cross-encoder reranker re-scoring top-k candidates before context is passed to the LLM. Closes the gap on queries where semantic similarity alone surfaces the wrong document.",
-            "Per-user memory layer (Postgres-backed, LangGraph orchestration) scoping stored context to document metadata and session summaries to avoid context window bloat across multi-session use.",
-            "Serving 200+ daily student queries across 5 university partners.",
+            "International students applying to US colleges are navigating a process that doesn't map to anything they've seen before: different application timelines, financial aid structures that don't translate, and placement tests with no obvious prep path.",
+            "University advisors can't scale to 200+ individual questions per day across multiple time zones. Most guidance was either generic or delayed until business hours in a completely different hemisphere.",
+            "Each student's situation is different: their documents, their target schools, their visa situation. Generic advice doesn't help, so the system needed to answer questions grounded in each student's actual application materials.",
           ],
         },
         {
-          header: "Evaluation & Tuning",
+          header: "What I Built",
           points: [
-            "Built a manual evaluation harness of 100+ query/document pairs against a 1k+ document corpus to measure retrieval quality before shipping any change to the pipeline.",
-            "Tuned chunk size, overlap, and similarity threshold iteratively against the same fixed eval set. Each variable changed in isolation to measure its effect on retrieval accuracy.",
-            "Reached 95%+ retrieval accuracy across all university partners. Retrieval misses surface a structured \"not found\" response rather than a confident wrong answer.",
+            "Async OCR pipeline that parses each student's uploaded documents on intake (essays, transcripts, resumes), extracts structured data, and embeds it into the vector store for personalized retrieval.",
+            "Production RAG pipeline with OpenAI embeddings stored in Qdrant and a cross-encoder reranker re-scoring top-k candidates before context is passed to the LLM.",
+            "Per-user memory layer (Postgres-backed, LangGraph orchestration) scoped to document metadata and session summaries, which tracks where each student is in the process across sessions without context window bloat.",
+            "Evaluation harness of 100+ query/document pairs against a 1k+ document corpus. Tuned chunk size, overlap, and similarity threshold against the same fixed eval set, each variable changed in isolation.",
+          ],
+        },
+        {
+          header: "Architecture Decisions",
+          points: [
+            "Cross-encoder reranker as a second pass after semantic retrieval, where embedding similarity surfaces candidates by topic and the reranker re-scores them by actual relevance to the specific query. Closes the gap on questions where the right document isn't the most similar one.",
+            "Semantic chunking for knowledge base documents (splitting on similarity drops between adjacent sentences) rather than fixed-size chunks, which preserves coherent policy and process context that fixed windows would split mid-thought.",
+            "Student-uploaded documents (essays, transcripts) chunked by natural structure rather than token count, so an essay is embedded whole and a transcript is chunked by semester. The retrieval unit should match how the document is queried.",
+            "Retrieval misses return a structured 'not found' response rather than a best-guess answer, because a confident wrong answer about a visa deadline or financial aid cutoff is worse than no answer.",
           ],
         },
         {
           header: "Infrastructure",
           points: [
             "AWS: ECS for container orchestration, RDS for managed PostgreSQL, S3 with pre-signed URLs for secure document storage.",
-            "Async document processing pipeline for OCR parsing of application documents (10+ per student) and resumes, extracting structured data from uploaded files for downstream processing.",
-            "Django REST + Next.js 15 full-stack. Docker Compose for local development parity with production.",
-            "Three-environment setup (dev/staging/prod) with CI/CD pipeline for automated deployments and rollback.",
+            "Three-environment setup (dev/staging/prod) with CI/CD pipeline for automated deployments and rollback. Docker Compose for local development parity with production.",
           ],
         },
-      ],
-    },
-    impact: {
-      label: "Impact",
-      points: [
-        "5 university partners onboard their students directly into the platform to help them find internships, prepare for placement tests, and navigate US college applications.",
-        "200+ daily student queries handled at 95%+ retrieval accuracy. Students get specific, sourced answers without waiting on advisor availability across time zones.",
-        "OCR pipeline replaced manual per-applicant document review. Each student's application documents and resume are parsed automatically on upload, chunked using a semantic strategy that checks similarity between adjacent sentences, and embedded into the vector store.",
-        "Relevant information extracted from parsed documents feeds into the AI advisor as personalized context, re-ranked before being passed to the LLM so the advisor answers questions specific to that student's own application materials.",
-        "Some integrations omitted from the demo for confidentiality; the architecture here represents the core production system.",
+        {
+          header: "Impact",
+          points: [
+            "5 university partners onboarding students directly; 200+ daily queries handled at 95%+ retrieval accuracy across partners.",
+            "Students get answers grounded in their own uploaded documents, specific to their essay, their transcript, their situation, not generic college advice.",
+            "OCR pipeline replaced manual per-applicant document review; documents are parsed, chunked, and embedded automatically on upload.",
+            "Per-user memory means returning students don't re-explain their situation each session since the agent already knows where they left off.",
+            "Some integrations omitted from the demo for confidentiality; the architecture shown represents the core production system.",
+          ],
+        },
       ],
     },
   },
   {
     title: "Safety Straw",
-    hook: "AI support agent with custom tools and sub-agents that resolved 80%+ of customer inquiries autonomously. Owned architecture end-to-end for async order processing, REST API with Stripe integration, and React storefront.",
+    hook: "Full-stack build for a seed-stage startup making straws that chemically glow when a drink has been spiked. Owned the website, Stripe-integrated checkout, async notification system, and an AI agent for B2B order management.",
     year: "2024 — 2025",
     role: "Software Engineer @ Safety Straw (Seed-stage Startup)",
     stack: ["Node.js", "Express", "MongoDB", "Stripe", "React", "CI/CD"],
@@ -168,33 +178,39 @@ const projects: Project[] = [
       label: "Engineering",
       sections: [
         {
-          header: "AI Support Agent",
+          header: "Problem",
           points: [
-            "Tool-calling AI agent with custom tools and sub-agents that looked up product, order, and shipment data through internal and third-party APIs. Resolved 80%+ of customer inquiries autonomously, removing the need for manual ticket triage.",
+            "Safety Straw sells a hardware product through two distinct channels: individual consumers (B2C) and bars, venues, and event organizers buying in bulk (B2B). Both needed a working e-commerce experience before launch.",
+            "A small founding team can't staff a support queue. Venue managers ordering 500 straws have operational questions like order status, delivery timing, and restock thresholds that aren't worth routing to a human for every ticket.",
           ],
         },
         {
-          header: "Backend & Payments",
+          header: "What I Built",
           points: [
-            "REST API (Node.js + Express + MongoDB) with JWT authentication powering checkout and order management end-to-end.",
-            "Stripe integration for payment processing: checkout sessions, webhook handling for order confirmation, async queues for post-purchase notification workflows.",
-            "Single codebase serving four product surfaces: B2C storefront, B2B bulk order flow, editorial blog, and transactional notification service.",
+            "REST API (Node.js + Express + MongoDB) with JWT authentication powering checkout and order management end-to-end for both B2C and B2B flows.",
+            "Stripe integration for payment processing: checkout sessions, webhook handling for order confirmation, and async queues for post-purchase notification workflows.",
+            "Tool-calling AI support agent with custom tools and sub-agents that looks up order and shipment data through internal and third-party APIs, resolving 80%+ of customer inquiries autonomously.",
+            "Single codebase serving four surfaces: B2C storefront, B2B bulk order flow, editorial blog, and transactional notification service.",
+            "React storefront built to Figma designs. CI/CD pipeline (GitHub Actions + Docker) with tests and lint on every PR.",
           ],
         },
         {
-          header: "Frontend & Delivery",
+          header: "Architecture Decisions",
           points: [
-            "React storefront built pixel-perfect to Figma designs with clean HTML/CSS and no designer handoff ambiguity.",
-            "CI/CD pipeline (GitHub Actions, Docker) running tests and lint checks on every PR, automating deploys and cutting release cycle from hours to minutes.",
+            "Separate B2B bulk order flow from B2C checkout because venue managers need volume pricing and restock logic that doesn't apply to individual purchases, and mixing them would have made both worse.",
+            "AI agent uses tool calls to query live order and shipment data rather than a knowledge base. Order status is a live-data question; embedding it would give you a snapshot that's stale the moment a shipment updates.",
+            "Async queues for post-purchase notifications decouple payment processing from notification delivery, so a slow email provider doesn't hold up the checkout response.",
+            "Agent escalates cleanly when a query is outside its tool coverage rather than guessing. B2B clients notice when an agent hallucinates an order status.",
           ],
         },
-      ],
-    },
-    impact: {
-      label: "Impact",
-      points: [
-        "AI agent resolved 80%+ of customer inquiries autonomously, removing the need for manual ticket triage entirely for the majority of support volume.",
-        "Shipped 25% ahead of schedule. The AI support agent handled 80%+ of inquiries autonomously while event-driven async queues processed orders and triggered post-purchase notifications end-to-end without manual intervention.",
+        {
+          header: "Impact",
+          points: [
+            "AI agent resolved 80%+ of customer inquiries autonomously, which removed manual ticket triage for the majority of support volume at a company with no dedicated support staff.",
+            "Shipped 25% ahead of schedule as the sole engineer across backend, frontend, payments, and AI.",
+            "Async notification system handles the full post-purchase flow end-to-end without manual intervention across both B2C and B2B channels.",
+          ],
+        },
       ],
     },
   },
@@ -202,12 +218,17 @@ const projects: Project[] = [
   /* ───────────── TIER 2 — OTHER PROJECTS ───────────── */
   {
     title: "Multi-Agent Simulation Engine",
-    hook: "Real-time civilization simulation I scaled to 50,000+ concurrent agents using a 4-tier scheduler (critical/gameplay/environment/misc) with async job queues, separating deterministic combat from construction tasks to prevent frame stalls.",
+    hook: "Real-time civilization simulation supporting up to 50,000 concurrent agents. The scheduler is world-agnostic: any simulation plugs in by implementing a single DoAction interface, and the scheduler stays completely blind to agent and action types. Scaled using a 4-tier priority system (critical/gameplay/environment/misc) with async job queues, separating deterministic combat from construction tasks to prevent frame stalls.",
     year: "2026",
     role: "Product Lead — Team of 30 (18 commits)",
     stack: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Unit Testing"],
     github: "https://github.com/CSE498/Spring2026-CompanyC",
-    media: [],
+    media: [
+      { type: "video", src: "/previews/scheduler-demo.mp4" },
+      { type: "image", src: "/previews/scheduler-1.jpg" },
+      { type: "image", src: "/previews/scheduler-2.jpg" },
+      { type: "image", src: "/previews/scheduler-3.jpg" },
+    ],
     tier: 2,
     engineering: {
       label: "Engineering",
