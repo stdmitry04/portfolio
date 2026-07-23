@@ -251,6 +251,26 @@ const projects: Project[] = [
     note: "Academic engineering project focused on architecture and correctness, not business metrics.",
   },
   {
+    title: "OpsCore",
+    hook: "Public demo of an internal HR and operations platform — the kind of system I build at APS but can't show. The production work is under NDA so this exists to point at something concrete. Covers the core patterns: multi-tenant RBAC, a tool-calling AI agent with memory, and a two-stage RAG pipeline.",
+    year: "2026",
+    role: "Demo Project — open source",
+    stack: ["Django REST", "Next.js 14", "PostgreSQL", "Redis", "Celery", "Qdrant", "Claude API"],
+    github: "https://github.com/stdmitry-aps/opscore",
+    media: [],
+    tier: 2,
+    engineering: {
+      label: "Engineering",
+      points: [
+        "Permission registry validates every perm code at import time. A reference to an unregistered permission prevents the server from starting — misconfiguration surfaces at deploy, not at 2am when a specific user hits a specific endpoint.",
+        "AI agent runs as a Celery task rather than a streaming HTTP response. The task finishes even if the client disconnects, and the result is waiting when they reconnect.",
+        "Two-stage RAG: Qdrant returns top-20 candidates by cosine similarity, a cross-encoder rescores them by actual relevance to the query, and chunks below 0.70 are dropped. Better precision than embedding similarity alone.",
+        "Short-term memory in Redis (20-turn sliding window, 1h TTL), long-term preferences in Postgres injected into the system prompt on every request so the agent remembers across sessions.",
+      ],
+    },
+    note: "Demo of production patterns. Actual production systems are under NDA.",
+  },
+  {
     title: "QuiKard",
     hook: "Built a digital business card service: create in under a minute, export to Apple Wallet without signing up, share via NFC tap.",
     year: "2025",
@@ -289,26 +309,6 @@ const projects: Project[] = [
         "Used Supabase RLS to enforce per-student data isolation, handle school email domain validation, and provide OAuth without custom auth infrastructure.",
       ],
     },
-  },
-  {
-    title: "OpsCore",
-    hook: "Public demo of an internal HR and operations platform — the kind of system I build at APS but can't show. The production work is under NDA so this exists to point at something concrete. Covers the core patterns: multi-tenant RBAC, a tool-calling AI agent with memory, and a two-stage RAG pipeline.",
-    year: "2026",
-    role: "Demo Project — open source",
-    stack: ["Django REST", "Next.js 14", "PostgreSQL", "Redis", "Celery", "Qdrant", "Claude API"],
-    github: "https://github.com/stdmitry-aps/opscore",
-    media: [],
-    tier: 2,
-    engineering: {
-      label: "Engineering",
-      points: [
-        "Permission registry validates every perm code at import time. A reference to an unregistered permission prevents the server from starting — misconfiguration surfaces at deploy, not at 2am when a specific user hits a specific endpoint.",
-        "AI agent runs as a Celery task rather than a streaming HTTP response. The task finishes even if the client disconnects, and the result is waiting when they reconnect.",
-        "Two-stage RAG: Qdrant returns top-20 candidates by cosine similarity, a cross-encoder rescores them by actual relevance to the query, and chunks below 0.70 are dropped. Better precision than embedding similarity alone.",
-        "Short-term memory in Redis (20-turn sliding window, 1h TTL), long-term preferences in Postgres injected into the system prompt on every request so the agent remembers across sessions.",
-      ],
-    },
-    note: "Demo of production patterns. Actual production systems are under NDA.",
   },
   {
     title: "Volunteer Matchmaker",
