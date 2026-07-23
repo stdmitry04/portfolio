@@ -55,7 +55,7 @@ const projects: Project[] = [
     year: "2025 — Present",
     role: "Backend Engineer @ APS Data Technologies",
     stack: ["Django REST", "Celery", "Next.js 15", "PostgreSQL", "AWS", "Terraform"],
-    demo: "https://github.com/stdmitry-aps/opscore",
+    demo: "https://github.com/stdmitry04/opscore",
     media: [],
     tier: 1,
     engineering: {
@@ -114,7 +114,7 @@ const projects: Project[] = [
     year: "2024 — 2025",
     role: "Backend Engineer @ APS Data Technologies",
     stack: ["Django REST", "Qdrant", "OpenAI", "LangGraph", "AWS S3/ECS/RDS", "Docker"],
-    demo: "https://github.com/stdmitry-aps/opscore",
+    demo: "https://github.com/stdmitry04/opscore",
     media: [],
     tier: 1,
     engineering: {
@@ -254,7 +254,7 @@ const projects: Project[] = [
     year: "2026",
     role: "Demo Project — open source",
     stack: ["Django REST", "Next.js 14", "PostgreSQL", "Redis", "Celery", "Qdrant", "Claude API"],
-    github: "https://github.com/stdmitry-aps/opscore",
+    github: "https://github.com/stdmitry04/opscore",
     media: [],
     tier: 2,
     engineering: {
