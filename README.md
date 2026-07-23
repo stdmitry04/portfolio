@@ -1,4 +1,4 @@
-# Dmitry Starodubtsev — Portfolio
+# Dmitry Starodubtsev — Portfolio.
 
 Personal portfolio site built with Next.js 15. Covers production work, side projects, and the stack behind them.
 
