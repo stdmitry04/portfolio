@@ -55,7 +55,6 @@ const projects: Project[] = [
     year: "2025 — Present",
     role: "Backend Engineer @ APS Data Technologies",
     stack: ["Django REST", "Celery", "Next.js 15", "PostgreSQL", "AWS", "Terraform"],
-    github: "https://github.com/stdmitry04/aps-main-demo",
     demo: "https://github.com/stdmitry-aps/opscore",
     media: [],
     tier: 1,
@@ -115,7 +114,6 @@ const projects: Project[] = [
     year: "2024 — 2025",
     role: "Backend Engineer @ APS Data Technologies",
     stack: ["Django REST", "Qdrant", "OpenAI", "LangGraph", "AWS S3/ECS/RDS", "Docker"],
-    github: "https://github.com/stdmitry04/campus-usa-demo",
     demo: "https://github.com/stdmitry-aps/opscore",
     media: [],
     tier: 1,
@@ -611,7 +609,7 @@ function ProjectLinks({ github, link, demo }: { github?: string; link?: string; 
           href={demo}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-label text-text-muted hover:text-text transition-colors duration-200 flex items-center gap-1.5"
+          className="font-mono text-label text-accent-blue hover:text-text transition-colors duration-200 flex items-center gap-1.5"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
