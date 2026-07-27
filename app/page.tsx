@@ -65,45 +65,21 @@ const projects: Project[] = [
         {
           header: "Problem",
           points: [
-            "Districts were running HR, payroll, and staff provisioning across disconnected systems: background checks in one vendor portal, payroll setup in another, timesheets on paper. There was no single place to see a candidate or employee's full status.",
-            "Access control was binary: a role either had module access or it didn't. Districts with 50+ role types and constantly shifting responsibilities had no way to express that without developer intervention and a redeploy.",
-            "Candidate screening was fully manual. HR staff reviewed applications one by one, which took 2+ hours per batch and became a bottleneck every time a district tried to expand hiring.",
+            "Districts ran HR, payroll, and staff provisioning across disconnected vendor portals with no unified view of a candidate or employee's status, no self-service role management, and manual candidate screening that took 2+ hours per batch.",
           ],
         },
         {
           header: "What I Built",
           points: [
-            "Async hiring pipeline (Django + Celery + Redis) with idempotent retry logic and a dead-letter queue that cut candidate screening from 2 hours to 12 minutes.",
-            "Capability-based RBAC following module.submodule.action, deny-by-default. A central permission registry materializes into the database on deploy and is the single source of truth; stale grants are purged on every update.",
-            "Tool-calling AI agent connected to background-check and payroll APIs via tool calls, with per-user memory persisting each person's recurring queries across sessions.",
-            "REST API powering a Next.js 15 + React 19 frontend with Zustand-managed candidate state. DocuSign integration for offer signatures, SSO for district-wide auth.",
-            "Timesheet and onboarding modules integrated with each district's existing payroll system via nightly exports and API calls, so no district had to replace infrastructure they already ran.",
-          ],
-        },
-        {
-          header: "Architecture Decisions",
-          points: [
-            "Celery workers for the hiring pipeline keep expensive screening operations off the API request path. Idempotent tasks with a dead-letter queue mean a Redis blip doesn't silently drop a candidate.",
-            "RBAC modeled as capabilities rather than roles-with-flags, similar to Kubernetes resource access. A missing grant means denied with no separate deny rules to maintain, which made the permission model auditable and meant districts could reason about it without reading code.",
-            "Permission enforcement mirrored identically on the backend (DRF permission classes) and frontend (route and component gating) so UI state and API access never diverge. Live changes propagate to active sessions within 60 seconds with no re-login.",
-            "AI agent uses tool calls to query live payroll and HR data rather than a knowledge base, because status questions need current records and not a cached snapshot from the last embedding run.",
-          ],
-        },
-        {
-          header: "Infrastructure",
-          points: [
-            "Multi-tenant architecture with per-district data isolation enforced at the query layer, so every request is scoped to the caller's tenant and role before any business logic runs.",
-            "AWS (ECS, RDS, S3, Terraform) supporting 1,650+ DAU and 500 AI-processed resumes per day. Autoscaling thresholds and connection pool limits sized to actual load profiles.",
-            "CloudWatch alerting on P99 latency, container logs, and error rates across dev/staging/prod environments.",
+            "Async hiring pipeline (Django + Celery + Redis) with idempotent retry and a dead-letter queue that keeps screening off the API request path so a Redis blip doesn't silently drop a candidate.",
+            "Capability-based RBAC (deny-by-default, module.submodule.action) with a central permission registry that materializes on deploy and purges stale grants automatically, so districts manage roles through the admin UI without filing a ticket or triggering a redeploy.",
+            "Tool-calling AI agent connected to live background-check and payroll APIs with per-user session memory, surfaced through a Next.js 15 frontend with DocuSign offer signing and SSO.",
           ],
         },
         {
           header: "Impact",
           points: [
-            "Hiring pipeline cut candidate screening from 2 hours to 12 minutes, which moved HR teams from manual review marathons to same-day decisions.",
-            "Districts manage roles and permissions entirely through the admin UI. A change that previously required a developer and a deploy now takes minutes with no tickets filed.",
-            "AI agent reduced time on routine ERP tasks 5x by pulling from background-check and payroll portals through a single interface instead of three separate logins.",
-            "Replaced paper-based timesheets and manual onboarding steps; new hire data syncs to payroll automatically without replacing existing district infrastructure.",
+            "1,650+ DAU at the 7th largest Illinois K-12 district; screening cut from 2 hours to 12 minutes; AI agent reduced routine ERP task time 5× by consolidating three separate vendor portals into one interface.",
           ],
         },
       ],
@@ -124,44 +100,21 @@ const projects: Project[] = [
         {
           header: "Problem",
           points: [
-            "International students applying to US colleges are navigating a process that doesn't map to anything they've seen before: different application timelines, financial aid structures that don't translate, and placement tests with no obvious prep path.",
-            "University advisors can't scale to 200+ individual questions per day across multiple time zones. Most guidance was either generic or delayed until business hours in a completely different hemisphere.",
-            "Each student's situation is different: their documents, their target schools, their visa situation. Generic advice doesn't help, so the system needed to answer questions grounded in each student's actual application materials.",
+            "International students applying to US colleges had no advisor coverage across time zones and no way to get answers grounded in their own documents (essays, transcripts, visa situation) rather than generic guidance.",
           ],
         },
         {
           header: "What I Built",
           points: [
-            "Async OCR pipeline that parses each student's uploaded documents on intake (essays, transcripts, resumes), extracts structured data, and embeds it into the vector store for personalized retrieval.",
-            "Production RAG pipeline with OpenAI embeddings stored in Qdrant and a cross-encoder reranker re-scoring top-k candidates before context is passed to the LLM.",
-            "Per-user memory layer (Postgres-backed, LangGraph orchestration) scoped to document metadata and session summaries, which tracks where each student is in the process across sessions without context window bloat.",
-            "Evaluation harness of 100+ query/document pairs against a 1k+ document corpus. Tuned chunk size, overlap, and similarity threshold against the same fixed eval set, each variable changed in isolation.",
-          ],
-        },
-        {
-          header: "Architecture Decisions",
-          points: [
-            "Cross-encoder reranker as a second pass after semantic retrieval, where embedding similarity surfaces candidates by topic and the reranker re-scores them by actual relevance to the specific query. Closes the gap on questions where the right document isn't the most similar one.",
-            "Semantic chunking for knowledge base documents (splitting on similarity drops between adjacent sentences) rather than fixed-size chunks, which preserves coherent policy and process context that fixed windows would split mid-thought.",
-            "Student-uploaded documents (essays, transcripts) chunked by natural structure rather than token count, so an essay is embedded whole and a transcript is chunked by semester. The retrieval unit should match how the document is queried.",
-            "Retrieval misses return a structured 'not found' response rather than a best-guess answer, because a confident wrong answer about a visa deadline or financial aid cutoff is worse than no answer.",
-          ],
-        },
-        {
-          header: "Infrastructure",
-          points: [
-            "AWS: ECS for container orchestration, RDS for managed PostgreSQL, S3 with pre-signed URLs for secure document storage.",
-            "Three-environment setup (dev/staging/prod) with CI/CD pipeline for automated deployments and rollback. Docker Compose for local development parity with production.",
+            "Async OCR pipeline that parses each student's uploaded documents on intake and embeds them into Qdrant, so every retrieval query is scoped to that student's actual materials, not a shared knowledge base.",
+            "Two-stage RAG pipeline (OpenAI embeddings → cross-encoder reranker) with semantic chunking aligned to document structure, where the reranker closes the gap when the right document isn't the most similar one to the raw query.",
+            "Per-user memory layer (Postgres + LangGraph) tracking document metadata and session summaries so returning students pick up where they left off without re-explaining their situation each session.",
           ],
         },
         {
           header: "Impact",
           points: [
-            "5 university partners onboarding students directly; 200+ daily queries handled at 95%+ retrieval accuracy across partners.",
-            "Students get answers grounded in their own uploaded documents, specific to their essay, their transcript, their situation, not generic college advice.",
-            "OCR pipeline replaced manual per-applicant document review; documents are parsed, chunked, and embedded automatically on upload.",
-            "Per-user memory means returning students don't re-explain their situation each session since the agent already knows where they left off.",
-            "Some integrations omitted from the demo for confidentiality; the architecture shown represents the core production system.",
+            "5 university partners onboarded; 200+ daily queries at 95%+ retrieval accuracy; OCR pipeline replaced manual per-applicant document review for every new upload.",
           ],
         },
       ],
@@ -182,35 +135,21 @@ const projects: Project[] = [
         {
           header: "Problem",
           points: [
-            "Safety Straw sells a hardware product through two distinct channels: individual consumers (B2C) and bars, venues, and event organizers buying in bulk (B2B). Both needed a working e-commerce experience before launch.",
-            "A small founding team can't staff a support queue. Venue managers ordering 500 straws have operational questions like order status, delivery timing, and restock thresholds that aren't worth routing to a human for every ticket.",
+            "A seed-stage startup needed a working e-commerce system for two distinct channels (individual B2C purchases and bulk B2B venue orders) before launch, with no dedicated support staff to handle the inquiry volume that comes with it.",
           ],
         },
         {
           header: "What I Built",
           points: [
-            "REST API (Node.js + Express + MongoDB) with JWT authentication powering checkout and order management end-to-end for both B2C and B2B flows.",
-            "Stripe integration for payment processing: checkout sessions, webhook handling for order confirmation, and async queues for post-purchase notification workflows.",
-            "Tool-calling AI support agent with custom tools and sub-agents that looks up order and shipment data through internal and third-party APIs, resolving 80%+ of customer inquiries autonomously.",
-            "Single codebase serving four surfaces: B2C storefront, B2B bulk order flow, editorial blog, and transactional notification service.",
-            "React storefront built to Figma designs. CI/CD pipeline (GitHub Actions + Docker) with tests and lint on every PR.",
-          ],
-        },
-        {
-          header: "Architecture Decisions",
-          points: [
-            "Separate B2B bulk order flow from B2C checkout because venue managers need volume pricing and restock logic that doesn't apply to individual purchases, and mixing them would have made both worse.",
-            "AI agent uses tool calls to query live order and shipment data rather than a knowledge base. Order status is a live-data question; embedding it would give you a snapshot that's stale the moment a shipment updates.",
-            "Async queues for post-purchase notifications decouple payment processing from notification delivery, so a slow email provider doesn't hold up the checkout response.",
-            "Agent escalates cleanly when a query is outside its tool coverage rather than guessing. B2B clients notice when an agent hallucinates an order status.",
+            "REST API (Node.js + Express + MongoDB) with JWT auth, Stripe checkout sessions, and async post-purchase notification queues that decouple payment processing from notification delivery so a slow email provider doesn't stall the checkout response.",
+            "Separate B2B bulk order flow with volume pricing and restock logic isolated from B2C checkout, since mixing the two channels would have made both worse and complicated the agent's order lookup surface.",
+            "Tool-calling AI support agent with sub-agents that queries live order and shipment data through internal and third-party APIs, escalating cleanly when a query is outside tool coverage rather than guessing.",
           ],
         },
         {
           header: "Impact",
           points: [
-            "AI agent resolved 80%+ of customer inquiries autonomously, which removed manual ticket triage for the majority of support volume at a company with no dedicated support staff.",
-            "Shipped 25% ahead of schedule as the sole engineer across backend, frontend, payments, and AI.",
-            "Async notification system handles the full post-purchase flow end-to-end without manual intervention across both B2C and B2B channels.",
+            "AI agent resolved 80%+ of customer inquiries autonomously at a company with zero dedicated support staff; shipped 25% ahead of schedule as the sole engineer across backend, frontend, payments, and AI.",
           ],
         },
       ],
@@ -222,7 +161,7 @@ const projects: Project[] = [
     title: "Multi-Agent Simulation Engine",
     hook: "Real-time civilization simulation supporting up to 50,000 concurrent agents. The scheduler is world-agnostic: any simulation plugs in by implementing a single DoAction interface, and the scheduler stays completely blind to agent and action types. Scaled using a 4-tier priority system (critical/gameplay/environment/misc) with async job queues, separating deterministic combat from construction tasks to prevent frame stalls.",
     year: "2026",
-    role: "Product Lead — Team of 30 (18 commits)",
+    role: "Product Lead — Team of 30",
     stack: ["C++23", "WebAssembly", "Emscripten", "Stride Scheduling", "Unit Testing"],
     github: "https://github.com/stdmitry04/scheduler",
     media: [
@@ -247,7 +186,6 @@ const projects: Project[] = [
         },
       ],
     },
-    note: "Academic engineering project focused on architecture and correctness, not business metrics.",
   },
   {
     title: "OpsCore",
@@ -268,7 +206,6 @@ const projects: Project[] = [
         "Agent: Resume screening must complete even if client disconnects — Celery task, not streaming HTTP.",
       ],
     },
-    note: "Each decision in the README is explained through the business constraint it solves.",
   },
   {
     title: "QuiKard",
