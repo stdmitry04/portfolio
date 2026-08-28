@@ -26,7 +26,7 @@ const siteUrl = "https://dmitrystarodubtsev.com";
 export const metadata: Metadata = {
   title: "Dmitry Starodubtsev — Backend & AI Engineer",
   description:
-    "Backend and AI engineer specializing in production RAG pipelines, tool-calling agents with memory, and multi-tenant AWS infrastructure. Shipped a K-12 ERP platform serving 1,650+ daily users, an AI admissions platform with 5 university partners, and full-stack e-commerce with an autonomous AI support agent for a seed-stage startup.",
+    "Backend and AI engineer building production RAG systems, tool-calling agents, and multi-tenant AWS infrastructure. Shipped a K-12 ERP supporting 3,200+ daily users, a RAG platform for 5 university partners, and an AI support agent automating 80%+ of inbound inquiries.",
   keywords: [
     "Dmitry Starodubtsev",
     "Dmitry Starodubtsev MSU",
@@ -79,13 +79,13 @@ export const metadata: Metadata = {
     siteName: "Dmitry Starodubtsev",
     title: "Dmitry Starodubtsev — Backend & AI Engineer",
     description:
-      "Backend and AI engineer specializing in production RAG pipelines, tool-calling agents with memory, and multi-tenant AWS infrastructure. Shipped a K-12 ERP platform serving 1,650+ daily users, an AI admissions platform with 5 university partners, and full-stack e-commerce with an autonomous AI support agent for a seed-stage startup.",
+      "Backend and AI engineer building production RAG systems, tool-calling agents, and multi-tenant AWS infrastructure. Shipped a K-12 ERP supporting 3,200+ daily users, a RAG platform for 5 university partners, and an AI support agent automating 80%+ of inbound inquiries.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Dmitry Starodubtsev — Backend & AI Engineer",
     description:
-      "Backend and AI engineer specializing in production RAG pipelines, tool-calling agents with memory, and multi-tenant AWS infrastructure. Shipped a K-12 ERP platform serving 1,650+ daily users, an AI admissions platform with 5 university partners, and full-stack e-commerce with an autonomous AI support agent for a seed-stage startup.",
+      "Backend and AI engineer building production RAG systems, tool-calling agents, and multi-tenant AWS infrastructure. Shipped a K-12 ERP supporting 3,200+ daily users, a RAG platform for 5 university partners, and an AI support agent automating 80%+ of inbound inquiries.",
   },
   robots: {
     index: true,

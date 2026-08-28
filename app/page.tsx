@@ -51,10 +51,10 @@ type Project = {
 const projects: Project[] = [
   /* ───────────── TIER 1 — PRODUCTION WORK ───────────── */
   {
-    title: "ERP Platform for K12 Schools",
-    hook: "Multi-tenant ERP connecting HR, payroll, and staff provisioning for K-12 school districts. Replaces manual clock-in, paper-based hiring workflows, and IT-gated access changes. Serves 1,650+ daily active users at the 7th largest Illinois school district.",
+    title: "ERP Platform for K-12 Schools",
+    hook: "Multi-tenant ERP connecting HR, payroll, background checks, and staff workflows for K-12 school districts. Supports 3,200+ daily active users at the 7th-largest K-12 district in Illinois and processes 500 AI-processed resumes per day. The AWS stack sustained 5K+ RPS in k6 load tests.",
     year: "2025 — Present",
-    role: "Backend Engineer @ APS Data Technologies",
+    role: "Software Engineer @ APS Data Technologies",
     stack: ["Django REST", "Celery", "Next.js 15", "PostgreSQL", "AWS", "Terraform"],
     demo: "https://github.com/stdmitry04/opscore",
     media: [],
@@ -65,21 +65,21 @@ const projects: Project[] = [
         {
           header: "Problem",
           points: [
-            "Districts ran HR, payroll, and staff provisioning across disconnected vendor portals with no unified view of a candidate or employee's status, no self-service role management, and manual candidate screening that took 2+ hours per batch.",
+            "Candidate screening ran sequentially and routine HR and payroll work spanned disconnected enterprise systems, while each district needed configurable authorization without custom permission code.",
           ],
         },
         {
           header: "What I Built",
           points: [
-            "Async hiring pipeline (Django + Celery + Redis) with idempotent retry and a dead-letter queue that keeps screening off the API request path so a Redis blip doesn't silently drop a candidate.",
-            "Capability-based RBAC (deny-by-default, module.submodule.action) with a central permission registry that materializes on deploy and purges stale grants automatically, so districts manage roles through the admin UI without filing a ticket or triggering a redeploy.",
-            "Tool-calling AI agent connected to live background-check and payroll APIs with per-user session memory, surfaced through a Next.js 15 frontend with DocuSign offer signing and SSO.",
+            "Async candidate-screening pipeline (Django + Celery + Redis) for document parsing, AI scoring, and concurrent evaluation, with idempotent retries and row-level locking.",
+            "Runtime-configurable RBAC architecture that lets districts define roles, permissions, and hierarchical resource scopes without per-district authorization code.",
+            "Tool-calling LLM agent with per-user memory and integrations across enterprise HR, payroll, and background-check systems.",
           ],
         },
         {
           header: "Impact",
           points: [
-            "1,650+ DAU at the 7th largest Illinois K-12 district; screening cut from 2 hours to 12 minutes; AI agent reduced routine ERP task time 5× by consolidating three separate vendor portals into one interface.",
+            "Candidate screening cut 10× from 2 hours to 12 minutes and routine HR and payroll tasks cut 5×. The AWS stack supports 3,200+ DAU and 500 AI-processed resumes per day, and sustained 5K+ RPS in k6 load tests.",
           ],
         },
       ],
@@ -87,10 +87,10 @@ const projects: Project[] = [
   },
   {
     title: "Admissions & Career Platform for University Partners",
-    hook: "AI-powered student support platform embedded with 5 university partners across the US and India. Guides international students through US college applications, internship searches, hackathons, and financing. RAG pipeline with cross-encoder reranking and per-user memory handles 200+ daily queries at 95%+ retrieval accuracy.",
-    year: "2024 — 2025",
-    role: "Backend Engineer @ APS Data Technologies",
-    stack: ["Django REST", "Qdrant", "OpenAI", "LangGraph", "AWS S3/ECS/RDS", "Docker"],
+    hook: "Production RAG platform serving 5 university partners. Reaches 95%+ retrieval accuracy across a 1K+ document corpus using async ingestion, OpenAI embeddings, Qdrant semantic retrieval, cross-encoder reranking, and evaluation across 100+ test cases.",
+    year: "2025 — Present",
+    role: "Software Engineer @ APS Data Technologies",
+    stack: ["Django REST", "Qdrant", "OpenAI", "Cross-encoder", "AWS S3/ECS/RDS", "Docker"],
     demo: "https://github.com/stdmitry04/opscore",
     media: [],
     tier: 1,
@@ -100,21 +100,21 @@ const projects: Project[] = [
         {
           header: "Problem",
           points: [
-            "International students applying to US colleges had no advisor coverage across time zones and no way to get answers grounded in their own documents (essays, transcripts, visa situation) rather than generic guidance.",
+            "University partners needed accurate retrieval over a growing document corpus, with a repeatable way to measure whether retrieval changes improved results instead of relying on anecdotal responses.",
           ],
         },
         {
           header: "What I Built",
           points: [
-            "Async OCR pipeline that parses each student's uploaded documents on intake and embeds them into Qdrant, so every retrieval query is scoped to that student's actual materials, not a shared knowledge base.",
-            "Two-stage RAG pipeline (OpenAI embeddings → cross-encoder reranker) with semantic chunking aligned to document structure, where the reranker closes the gap when the right document isn't the most similar one to the raw query.",
-            "Per-user memory layer (Postgres + LangGraph) tracking document metadata and session summaries so returning students pick up where they left off without re-explaining their situation each session.",
+            "Async document-ingestion pipeline that creates OpenAI embeddings and indexes content in Qdrant for semantic retrieval.",
+            "Two-stage RAG pipeline combining vector retrieval with cross-encoder reranking to improve precision after the initial semantic search.",
+            "Retrieval evaluation suite covering 100+ test cases against a 1K+ document corpus to measure accuracy and validate pipeline changes.",
           ],
         },
         {
           header: "Impact",
           points: [
-            "5 university partners onboarded; 200+ daily queries at 95%+ retrieval accuracy; OCR pipeline replaced manual per-applicant document review for every new upload.",
+            "Deployed with 5 university partners and achieved 95%+ retrieval accuracy across the evaluated document corpus.",
           ],
         },
       ],
@@ -122,10 +122,10 @@ const projects: Project[] = [
   },
   {
     title: "Safety Straw",
-    hook: "Full-stack build for a seed-stage startup making straws that chemically glow when a drink has been spiked. Owned the website, Stripe-integrated checkout, async notification system, and an AI agent for B2B order management.",
-    year: "2024 — 2025",
-    role: "Software Engineer @ Safety Straw (Seed-stage Startup)",
-    stack: ["Node.js", "Express", "MongoDB", "Stripe", "React", "CI/CD"],
+    hook: "E-commerce and customer-support systems for a seed-stage consumer safety startup. Built a Node.js/Express backend with Stripe, asynchronous order workflows, and an AI support agent grounded in product, order, and shipment context.",
+    year: "Sep. 2024 — Apr. 2025",
+    role: "Software Engineer @ Safety Straw (Seed-stage Consumer Safety Startup)",
+    stack: ["Node.js", "Express", "Stripe", "REST APIs", "Docker", "GitHub Actions"],
     github: undefined,
     media: [],
     tier: 1,
@@ -135,21 +135,21 @@ const projects: Project[] = [
         {
           header: "Problem",
           points: [
-            "A seed-stage startup needed a working e-commerce system for two distinct channels (individual B2C purchases and bulk B2B venue orders) before launch, with no dedicated support staff to handle the inquiry volume that comes with it.",
+            "Inbound customer-support inquiries had an initial response time of 4–12 hours, while the e-commerce backend needed reliable payment, order, and notification workflows.",
           ],
         },
         {
           header: "What I Built",
           points: [
-            "REST API (Node.js + Express + MongoDB) with JWT auth, Stripe checkout sessions, and async post-purchase notification queues that decouple payment processing from notification delivery so a slow email provider doesn't stall the checkout response.",
-            "Separate B2B bulk order flow with volume pricing and restock logic isolated from B2C checkout, since mixing the two channels would have made both worse and complicated the agent's order lookup surface.",
-            "Tool-calling AI support agent with sub-agents that queries live order and shipment data through internal and third-party APIs, escalating cleanly when a query is outside tool coverage rather than guessing.",
+            "Node.js/Express e-commerce backend with Stripe checkout, payment-state handling, order lifecycle APIs, and asynchronous notification and order-processing workflows.",
+            "AI support agent grounded in product, order, and shipment context, with escalations pre-filtered for manual support.",
+            "Docker and GitHub Actions CI/CD pipeline covering testing, migrations, staging builds, and zero-downtime deployment.",
           ],
         },
         {
           header: "Impact",
           points: [
-            "AI agent resolved 80%+ of customer inquiries autonomously at a company with zero dedicated support staff; shipped 25% ahead of schedule as the sole engineer across backend, frontend, payments, and AI.",
+            "Automated 80%+ of inbound support inquiries and cut initial response time from 4–12 hours to under 30 seconds. Reduced deployments from 30–45 minutes to 5–8 minutes.",
           ],
         },
       ],
@@ -275,18 +275,20 @@ const skills = {
     "Embeddings",
     "Cross-encoder Reranking",
     "Agentic Systems (Tool Calling, Memory)",
-    "Eval Design",
+    "Retrieval Evaluation",
   ],
-  Backend: [
+  "Backend / Systems": [
     "Python",
     "Django REST",
     "FastAPI",
     "Celery",
-    "Node.js",
+    "Node.js / Express",
     "REST APIs",
     "Async Processing",
     "RBAC",
     "Stripe",
+    "C++",
+    "SQL",
   ],
   Frontend: ["TypeScript", "React", "Next.js", "HTML/CSS", "Tailwind CSS", "Zustand"],
   Infrastructure: [
@@ -295,6 +297,7 @@ const skills = {
     "Docker",
     "CI/CD (GitHub Actions)",
     "CloudWatch",
+    "k6",
     "Autoscaling",
   ],
   Databases: ["PostgreSQL", "Redis", "MongoDB", "Qdrant", "SQLite"],
@@ -988,8 +991,8 @@ export default function Home() {
               className="grid grid-cols-2 gap-x-8 gap-y-5 mb-10 max-w-lg"
             >
               {[
-                { stat: "ERP in production", detail: "7th largest K-12 district in Illinois" },
-                { stat: "AI platform in production", detail: "5 university partners, US & Global" },
+                { stat: "3,200+ daily users", detail: "7th-largest K-12 district in Illinois" },
+                { stat: "95%+ retrieval accuracy", detail: "5 university partners" },
               ].map((h, i) => (
                 <motion.div
                   key={i}
@@ -1085,9 +1088,9 @@ export default function Home() {
               tool-calling agents with memory, and multi-tenant backends with
               scalable AWS infrastructure. At{" "}
               <span className="text-accent-blue">APS Data Technologies</span>{" "}
-              I&apos;ve shipped systems serving the 7th largest Illinois K-12
-              district and 5 university partners — owning backend architecture,
-              deployment, and the AI features end-to-end.
+              I&apos;ve shipped systems supporting 3,200+ daily users at the
+              7th-largest Illinois K-12 district and production RAG for 5
+              university partners.
             </p>
             <p className="font-body text-body-lg text-text-muted leading-relaxed mt-6">
               I build things that hold up in production, not just in demos.
@@ -1138,16 +1141,14 @@ export default function Home() {
                 Software Engineer
               </h3>
               <p className="font-mono text-body text-sage mb-3">
-                APS Data Technologies — EdTech B2B
+                APS Data Technologies — EdTech B2B SaaS
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                Building production RAG pipelines, tool-calling AI agents with
-                per-user memory, and multi-tenant backends with scalable AWS
-                infrastructure serving the 7th largest Illinois K-12 district and
-                5 university partners. Owned backend architecture end-to-end for
-                async processing, vector search, and a capability-based RBAC
-                system districts use to manage their own roles and permissions at
-                runtime.
+                Building production RAG pipelines for 5 university partners,
+                async screening infrastructure that cut processing time 10×,
+                and a tool-calling ERP agent that cut routine task time 5×.
+                Designed configurable RBAC and AWS infrastructure supporting
+                3,200+ DAU, 500 AI-processed resumes per day, and 5K+ RPS.
               </p>
             </motion.div>
 
@@ -1167,14 +1168,14 @@ export default function Home() {
                 Software Engineer
               </h3>
               <p className="font-mono text-body text-sage mb-3">
-                Safety Straw — Seed-stage Safety Tech Startup
+                Safety Straw — Seed-stage Consumer Safety Startup
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                Built an AI support agent with custom tools and sub-agents that
-                resolved 80%+ of customer inquiries autonomously. Shipped the
-                REST API backend with Stripe integration and async order
-                workflows, plus the React storefront end-to-end as the sole
-                engineer.
+                Built an AI support agent that automated 80%+ of inbound
+                inquiries and cut initial response time from 4–12 hours to under
+                30 seconds. Shipped the Node.js/Express and Stripe backend with
+                async order workflows, plus CI/CD that cut deployments to 5–8
+                minutes.
               </p>
             </motion.div>
 
@@ -1202,12 +1203,65 @@ export default function Home() {
               </p>
             </motion.div>
 
-            {/* Education */}
+            {/* Michigan State University */}
             <motion.div
               initial={{ opacity: 0, x: -15 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
+              <p className="font-mono text-label text-accent-blue mb-1.5">
+                August 2023 — August 2024
+              </p>
+              <h3 className="font-display text-sub-heading font-light text-text mb-1">
+                Data Automation Specialist
+              </h3>
+              <p className="font-mono text-body text-sage mb-3">
+                Michigan State University
+              </p>
+              <p className="text-body text-text-muted leading-relaxed">
+                Cut archival-data processing time 10× across thousands of
+                newspaper records with a Python ETL pipeline that normalized
+                metadata, detected missing records, and automated archive
+                lookups. Recovered missing publication records and standardized
+                date and metadata formats for downstream research.
+              </p>
+            </motion.div>
+
+            {/* SpellSystems */}
+            <motion.div
+              initial={{ opacity: 0, x: -15 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="relative"
+            >
+              <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
+              <p className="font-mono text-label text-accent-blue mb-1.5">
+                May 2021 — July 2023
+              </p>
+              <h3 className="font-display text-sub-heading font-light text-text mb-1">
+                Backend Engineer
+              </h3>
+              <p className="font-mono text-body text-sage mb-3">
+                SpellSystems — Dubai (Remote)
+              </p>
+              <p className="text-body text-text-muted leading-relaxed">
+                Cut p95 API latency 60% by optimizing PostgreSQL query paths,
+                eliminating N+1 calls, and adding Redis caching. Reduced
+                background-job failures 40% with idempotent retries, failure
+                recovery, structured logging, and service-level alerting.
+              </p>
+            </motion.div>
+
+            {/* Education */}
+            <motion.div
+              initial={{ opacity: 0, x: -15 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-sage border-2 border-bg" />
