@@ -1125,7 +1125,7 @@ export default function Home() {
 
           {/* Timeline */}
           <div className="relative pl-8 border-l border-border space-y-12">
-            {/* APS */}
+            {/* Microsoft */}
             <motion.div
               initial={{ opacity: 0, x: -15 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -1135,20 +1135,46 @@ export default function Home() {
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
               <p className="font-mono text-label text-accent-blue mb-1.5">
-                April 2025 — Present
+                August 2026 — Present
               </p>
               <h3 className="font-display text-sub-heading font-light text-text mb-1">
-                Software Engineer
+                Applied AI Engineer — Copilot &amp; Excel Team
+              </h3>
+              <p className="font-mono text-body text-sage mb-3">
+                Microsoft — Part-Time Contract (Remote)
+              </p>
+              <p className="text-body text-text-muted leading-relaxed">
+                Design LLM evaluations for Copilot and Excel workflows, building
+                test cases and scoring rubrics for multi-step reasoning, code
+                generation, and tool use while identifying systematic failure
+                modes and expanding adversarial coverage.
+              </p>
+            </motion.div>
+
+            {/* APS */}
+            <motion.div
+              initial={{ opacity: 0, x: -15 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="relative"
+            >
+              <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
+              <p className="font-mono text-label text-accent-blue mb-1.5">
+                April 2025 — August 2026
+              </p>
+              <h3 className="font-display text-sub-heading font-light text-text mb-1">
+                Software Developer — AI &amp; Backend
               </h3>
               <p className="font-mono text-body text-sage mb-3">
                 APS Data Technologies — EdTech B2B SaaS
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                Building production RAG pipelines for 5 university partners,
-                async screening infrastructure that cut processing time 10×,
-                and a tool-calling ERP agent that cut routine task time 5×.
-                Designed configurable RBAC and AWS infrastructure supporting
-                3,200+ DAU, 500 AI-processed resumes per day, and 5K+ RPS.
+                Built a stateful FastAPI agent with tool calling, per-user memory,
+                and RBAC-aware execution across enterprise APIs, cutting routine
+                ERP task time 5×. Architected containerized services across AWS
+                and GCP, sustained 5K+ RPS in load tests, and shipped durable
+                async screening, multi-tenant Django RBAC, and production RAG.
               </p>
             </motion.div>
 
@@ -1157,7 +1183,7 @@ export default function Home() {
               initial={{ opacity: 0, x: -15 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
@@ -1171,11 +1197,11 @@ export default function Home() {
                 Safety Straw — Seed-stage Consumer Safety Startup
               </p>
               <p className="text-body text-text-muted leading-relaxed">
-                Built an AI support agent that automated 80%+ of inbound
-                inquiries and cut initial response time from 4–12 hours to under
-                30 seconds. Shipped the Node.js/Express and Stripe backend with
-                async order workflows, plus CI/CD that cut deployments to 5–8
-                minutes.
+                Built the commerce backend with checkout APIs, payment-state
+                reconciliation, and idempotent asynchronous order workflows.
+                Shipped the React/Next.js storefront and automated CI/CD, cutting
+                deployments from 30–45 minutes to 5–8 minutes while improving
+                mobile load time by 23%.
               </p>
             </motion.div>
 
@@ -1184,7 +1210,7 @@ export default function Home() {
               initial={{ opacity: 0, x: -15 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-rose border-2 border-bg" />
@@ -1208,7 +1234,7 @@ export default function Home() {
               initial={{ opacity: 0, x: -15 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
               className="relative"
             >
               <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
@@ -1216,7 +1242,7 @@ export default function Home() {
                 August 2023 — August 2024
               </p>
               <h3 className="font-display text-sub-heading font-light text-text mb-1">
-                Data Automation Specialist
+                Data Automation Engineer
               </h3>
               <p className="font-mono text-body text-sage mb-3">
                 Michigan State University
@@ -1227,32 +1253,6 @@ export default function Home() {
                 metadata, detected missing records, and automated archive
                 lookups. Recovered missing publication records and standardized
                 date and metadata formats for downstream research.
-              </p>
-            </motion.div>
-
-            {/* SpellSystems */}
-            <motion.div
-              initial={{ opacity: 0, x: -15 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.25 }}
-              className="relative"
-            >
-              <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
-              <p className="font-mono text-label text-accent-blue mb-1.5">
-                May 2021 — July 2023
-              </p>
-              <h3 className="font-display text-sub-heading font-light text-text mb-1">
-                Backend Engineer
-              </h3>
-              <p className="font-mono text-body text-sage mb-3">
-                SpellSystems — Dubai (Remote)
-              </p>
-              <p className="text-body text-text-muted leading-relaxed">
-                Cut p95 API latency 60% by optimizing PostgreSQL query paths,
-                eliminating N+1 calls, and adding Redis caching. Reduced
-                background-job failures 40% with idempotent retries, failure
-                recovery, structured logging, and service-level alerting.
               </p>
             </motion.div>
 
