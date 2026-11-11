@@ -1125,32 +1125,6 @@ export default function Home() {
 
           {/* Timeline */}
           <div className="relative pl-8 border-l border-border space-y-12">
-            {/* Microsoft */}
-            <motion.div
-              initial={{ opacity: 0, x: -15 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="relative"
-            >
-              <div className="absolute -left-[calc(2rem+5px)] top-1.5 w-2.5 h-2.5 rounded-full bg-accent-blue border-2 border-bg" />
-              <p className="font-mono text-label text-accent-blue mb-1.5">
-                August 2026 — Present
-              </p>
-              <h3 className="font-display text-sub-heading font-light text-text mb-1">
-                Applied AI Engineer — Copilot &amp; Excel Team
-              </h3>
-              <p className="font-mono text-body text-sage mb-3">
-                Microsoft — Part-Time Contract (Remote)
-              </p>
-              <p className="text-body text-text-muted leading-relaxed">
-                Design LLM evaluations for Copilot and Excel workflows, building
-                test cases and scoring rubrics for multi-step reasoning, code
-                generation, and tool use while identifying systematic failure
-                modes and expanding adversarial coverage.
-              </p>
-            </motion.div>
-
             {/* APS */}
             <motion.div
               initial={{ opacity: 0, x: -15 }}
